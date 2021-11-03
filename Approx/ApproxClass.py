@@ -20,7 +20,7 @@ class Approx:
         if n < nmin: n = nmin
         elif n > nmax: n = nmax
         return n
-       
+
 
     def get_wo(self):
 

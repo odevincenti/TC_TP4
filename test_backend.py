@@ -1,7 +1,27 @@
-import backend
-import FilterClass
-import Approx.ApproxClass
+from backend import FilterSpace, FilterType, ApproxType
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.signal as ss
 
+FS = FilterSpace()
+FS.addFilter(FilterType.LP, ApproxType.BW, 1000, 4000, 0.5, 20, 0, 1, 3, 80)
+butter = FS.filters[0]
+butter.print_self()
+print("\n\n", butter.num)
+print("----------------------------------------------------------------------")
+print(butter.den)
+print("\n\n", ss.sos2tf(butter.sos))
+
+b, a = butter.num, butter.den
+w, h = ss.freqs(b, a)
+plt.semilogx(w, 20 * np.log10(abs(h)))
+plt.title('Butterworth filter frequency response')
+plt.xlabel('Frequency [radians / second]')
+plt.ylabel('Amplitude [dB]')
+plt.margins(0, 0.1)
+plt.grid(which='both', axis='both')
+plt.axvline(100, color='green') # cutoff frequency
+plt.show()
 
 
 
