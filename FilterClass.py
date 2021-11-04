@@ -31,10 +31,12 @@ class FilterData:
         self.Ap = Ap
         self.Aa = Aa
         self.des = des
+        self.wan = None
         self.n = None
         self.wdes = None
         self.eps = None
         self.Q = None
+        self.k = None
 
     def print_data(self):
         print("wp =", self.wp)
@@ -42,9 +44,11 @@ class FilterData:
         print("Ap =", self.Ap)
         print("Aa =", self.Aa)
         print("des =", self.des)
+        print("wan =", self.wan)
         print("n =", self.n)
         print("wdes =", self.wdes)
         print("eps =", self.eps)
+        print("k =", self.k)
         return
 
 ########################################################################################################################
@@ -83,12 +87,14 @@ class Filter:
         self.Q = Q'''
         self.data = filter_data
         self.approx = approx
-        self.wan = self.get_wan()
+        self.data.wan = self.get_wan()
         self.data.eps = self.get_eps(self.data.Ap)
         self.data.n = self.get_n(nmin, nmax, Qmax)
         self.data.wdes = self.get_wdes()
         self.sos = self.get_sos()
         self.num, self.den = self.get_numden()
+        self.zeros, self.poles, self.data.k = self.get_zpk()
+        self.H = None
 
     # get_best_n: Calcula el n óptimo, depende de la aproximación. No toma en cuenta nmin y nmax.
     def get_best_n(self):
@@ -132,9 +138,25 @@ class Filter:
         sos = None
         return sos
 
+    '''
+    def parse_sos(self, sos):
+        for i in range(len(sos)):
+            sos_slice = sos[i]
+            sos_num = sos_slice[0:3]
+            sos_num = sos_num[::-1]
+            sos_den = sos_slice[3:6]'''
+
+    def get_zpk(self):
+        z, p, k = ss.tf2zpk(self.num, self.den)
+        return z, p, k
+
     def get_numden(self):
         num, den = ss.sos2tf(self.sos)
         return num, den
+
+    def get_H(self, w=None):
+        w, H = ss.freqs(self.num, self.den, w)
+        return H
 
     def get_eps(self, A):
         eps = np.sqrt(np.power(10, A/10) - 1)
@@ -169,5 +191,8 @@ class Filter:
         print("\t \t", self.num)
         print("H(s) = -----------------------------------------------------------------")
         print("\t \t", self.den)
+        if self.H is not None: print(self.H)
+        print("Zeros:", self.zeros)
+        print("Poles:", self.poles)
 
 

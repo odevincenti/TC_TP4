@@ -4,13 +4,10 @@ import matplotlib.pyplot as plt
 import scipy.signal as ss
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.BW, 1000, 4000, 0.5, 20, 0, 1, 3, 80)
+FS.addFilter(FilterType.LP, ApproxType.BW, 1.0, 4.0, 0.5, 20, 0, 1, 8, 80)
 butter = FS.filters[0]
 butter.print_self()
-print("\n\n", butter.num)
-print("----------------------------------------------------------------------")
-print(butter.den)
-print("\n\n", ss.sos2tf(butter.sos))
+
 
 b, a = butter.num, butter.den
 w, h = ss.freqs(b, a)
