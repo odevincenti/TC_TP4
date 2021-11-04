@@ -16,7 +16,7 @@ class FilterSpace:
         if not self.check_filter(filter_type, approx, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
             print("No se pudo crear el filtro")
             return False
-        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des, nmin, nmax, Qmax)
+        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, nmin, nmax, Qmax)
         if f.type != FilterType.ERR:
             self.filters.append(f)
         else:

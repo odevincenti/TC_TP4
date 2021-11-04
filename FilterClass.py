@@ -49,6 +49,7 @@ class FilterData:
         print("wdes =", self.wdes)
         print("eps =", self.eps)
         print("k =", self.k)
+        print("Q =", self.Q)
         return
 
 ########################################################################################################################
@@ -91,9 +92,13 @@ class Filter:
         self.data.eps = self.get_eps(self.data.Ap)
         self.data.n = self.get_n(nmin, nmax, Qmax)
         self.data.wdes = self.get_wdes()
-        self.sos = self.get_sos()
         self.num, self.den = self.get_numden()
         self.zeros, self.poles, self.data.k = self.get_zpk()
+        while not self.check_Q(Qmax):
+            self.data.n = self.data.n - 1
+            self.num, self.den = self.get_numden()
+            self.zeros, self.poles, self.data.k = self.get_zpk()
+        self.sos = self.get_sos()
         self.H = None
 
     # get_best_n: Calcula el n óptimo, depende de la aproximación. No toma en cuenta nmin y nmax.
@@ -150,6 +155,16 @@ class Filter:
         z, p, k = ss.tf2zpk(self.num, self.den)
         return z, p, k
 
+    def check_Q(self, Qmax):
+        r = True
+        Q = []
+        for pole in self.poles:
+            Q.append(abs(abs(pole) / (2 * pole.real)))
+        self.data.Q = max(Q)
+        if self.data.Q > Qmax:
+            r = False
+        return r
+
     def get_numden(self):
         num, den = ss.sos2tf(self.sos)
         return num, den
@@ -188,7 +203,7 @@ class Filter:
 
         elif self.type == FilterType.BP:
             wdes_min, wdes_max = [-1, -1], [-1, -1]
-            wo = self.data.wp[0]*self.data.wp[1]
+            wo = np.sqrt(self.data.wp[0]*self.data.wp[1])
             B = (self.data.wp[1] - self.data.wp[0])/wo
             wdes_min[0] = 1/self.get_wlim(self.data.Aa, 1/self.data.wa[0])
             wdes_max[0] = 1/self.get_wlim(self.data.Ap, 1/self.data.wp[0])
