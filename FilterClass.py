@@ -109,7 +109,7 @@ class Filter:
             wan = self.data.wp/self.data.wa
         elif self.type == FilterType.BP:
             wan = (self.data.wa[1] - self.data.wa[0])/(self.data.wp[1] - self.data.wp[0])
-        elif self.type == FilterType.BP:
+        elif self.type == FilterType.BR:
             wan = (self.data.wp[1] - self.data.wp[0])/(self.data.wa[1] - self.data.wa[0])
         else:
             wan = 0
@@ -162,19 +162,57 @@ class Filter:
         eps = np.sqrt(np.power(10, A/10) - 1)
         return eps
 
-    def get_wlim(self, A):
+    def get_wlim(self, A, wp):
         wlim = -1.0
         return wlim
 
-    def get_wdes(self):
-        wdes_min = self.get_wlim(self.data.Ap)
-        wdes_max = self.get_wlim(self.data.Aa)
+    def calculate_wdes(self, wdes_min, wdes_max):
         if wdes_min != -1 and wdes_max != -1:
-            wdes = wdes_min + (wdes_max - wdes_min)*self.data.des
+            wdes = wdes_min + (wdes_max - wdes_min) * self.data.des
         else:
             print("Error al calcular wlim")
             wdes = -1
             self.filter_error()
+        return wdes
+
+    def get_wdes(self):
+        if self.type == FilterType.LP:
+            wdes_min = self.get_wlim(self.data.Ap, self.data.wp)
+            wdes_max = self.get_wlim(self.data.Aa, self.data.wa)
+            wdes = self.calculate_wdes(wdes_min, wdes_max)
+
+        elif self.type == FilterType.HP:
+            wdes_min = 1/self.get_wlim(self.data.Aa, 1/self.data.wa)
+            wdes_max = 1/self.get_wlim(self.data.Ap, 1/self.data.wp)
+            wdes = self.calculate_wdes(wdes_max, wdes_min)
+
+        elif self.type == FilterType.BP:
+            wdes_min, wdes_max = [-1, -1], [-1, -1]
+            wo = self.data.wp[0]*self.data.wp[1]
+            B = (self.data.wp[1] - self.data.wp[0])/wo
+            wdes_min[0] = 1/self.get_wlim(self.data.Aa, 1/self.data.wa[0])
+            wdes_max[0] = 1/self.get_wlim(self.data.Ap, 1/self.data.wp[0])
+            wdes_min[1] = self.get_wlim(self.data.Ap, self.data.wp[1])
+            wdes_max[1] = self.get_wlim(self.data.Aa, self.data.wa[1])
+            wdes = [-1, -1]
+            wdes[0] = self.data.wa[0] + (self.data.wp[0] - self.data.wa[0])/2 #self.calculate_wdes(wdes_min[0], wdes_max[0])
+            wdes[1] = self.data.wp[1] + (self.data.wa[1] - self.data.wp[1])/2 #self.calculate_wdes(wdes_min[1], wdes_max[1])
+
+        elif self.type == FilterType.BR:
+            wdes_min, wdes_max = [-1, -1], [-1, -1]
+            wdes_min[0] = self.get_wlim(self.data.Ap, self.data.wp[0])
+            wdes_max[0] = self.get_wlim(self.data.Aa, self.data.wa[0])
+            wdes_min[1] = 1/self.get_wlim(self.data.Aa, 1/self.data.wa[1])
+            wdes_max[1] = 1/self.get_wlim(self.data.Ap, 1/self.data.wp[1])
+            wdes = [-1, -1]
+            wdes[0] = self.calculate_wdes(wdes_min[0], wdes_max[0])
+            wdes[1] = self.calculate_wdes(wdes_min[1], wdes_max[1])
+
+        else:
+            print("Error al calcular wlim")
+            wdes = -1
+            self.filter_error()
+
         return wdes
 
     def filter_error(self):

@@ -4,13 +4,12 @@ import matplotlib.pyplot as plt
 import scipy.signal as ss
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.BW, 1.0, 4.0, 0.5, 20, 0, 1, 8, 80)
+FS.addFilter(FilterType.BR, ApproxType.BW, [1.0, 5.0], [2.0, 4.0], 0.5, 20, 0, 1, 8, 80)
 butter = FS.filters[0]
 butter.print_self()
 
-
 b, a = butter.num, butter.den
-w, h = ss.freqs(b, a)
+w, h = ss.freqs(b, a)#, ss.findfreqs(b, a, 500, 'ba'))
 plt.semilogx(w, 20 * np.log10(abs(h)))
 plt.title('Butterworth filter frequency response')
 plt.xlabel('Frequency [radians / second]')

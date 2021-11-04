@@ -10,9 +10,9 @@ class Butterworth(Filter):
         n, wo = ss.buttord(self.data.wp, self.data.wa, self.data.Ap, self.data.Aa, True)
         return n
 
-    def get_wlim(self, A):
-        eps = self.get_eps(self.data.Ap)
-        wlim = np.power(eps, -1/self.data.n)*self.data.wp
+    def get_wlim(self, A, w):
+        eps = self.get_eps(A)
+        wlim = np.power(eps, -1/self.data.n)*w
         return wlim
 
     def get_sos(self):
