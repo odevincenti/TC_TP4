@@ -36,6 +36,7 @@ class FilterData:
         self.wdes = None
         self.eps = None
         self.Q = None
+        self.GD = None
         self.g = None
 
     def print_data(self):
@@ -49,6 +50,7 @@ class FilterData:
         print("wdes =", self.wdes)
         print("eps =", self.eps)
         print("g =", self.g)
+        print("GD =", self.GD)
         print("Q =", self.Q)
         return
 
@@ -77,7 +79,7 @@ class FilterData:
 # ----------------------------------------------------------------------------------------------------------------------
 
 class Filter:
-    def __init__(self, filter_type, approx, filter_data, n=None, Q=None, nmin=None, nmax=None, Qmax=None):
+    def __init__(self, filter_type, approx, filter_data, n=None, Q=None, GD = None, nmin=None, nmax=None, Qmax=None):
         self.type = filter_type
         '''self.wp = wp
         self.wa = wa
@@ -90,10 +92,10 @@ class Filter:
         self.approx = approx
         #self.data.wan = self.get_wan()
         self.data.eps = self.get_eps(self.data.Ap)
+        self.data.GD = GD
         if n is not None: self.data.n = n
         else: n = self.get_n(nmin, nmax)
         if Q is not None: self.data.Q = Q
-        #self.data.wdes = self.get_wdes()
         self.zeros, self.poles, self.data.g = self.get_zpk(n)
         self.zeros, self.poles, self.data.g = self.denormalize()
         while not self.check_Q(Qmax):
@@ -110,7 +112,7 @@ class Filter:
         #self.H = None
 
     # get_best_n: Calcula el n óptimo, depende de la aproximación. No toma en cuenta nmin y nmax.
-    def get_best_n(self):
+    def get_best_n(self, nmin, nmax):
         n = 0
         return n
 
@@ -130,9 +132,9 @@ class Filter:
         return wan
 
     def denormalize(self):
-        wan = self.get_wan()
-
-        if self.type == FilterType.LP:
+        if self.approx == ApproxType.B:
+            return self.zeros, self.poles, self.data.g
+        elif self.type == FilterType.LP:
             self.get_desfactor(1, self.data.wa/self.data.wp)
             z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, self.data.wp)
         elif self.type == FilterType.HP:
@@ -182,7 +184,7 @@ class Filter:
 
     # get_n: A partir del n óptimo, calcula el orden del filtro tomando en cuenta las restricciones.
     def get_n(self, nmin, nmax):
-        n = self.get_best_n()
+        n = self.get_best_n(nmin, nmax)
         if nmin is not None and n < nmin:
             n = nmin
         elif nmax is not None and n > nmax:
@@ -216,7 +218,7 @@ class Filter:
         return z, p, g
 
     def get_desfactor(self, wp, wa):
-        if self.data.Q is None and self.data.n is None:
+        if self.data.Q is None:# and self.data.n is None:
             w, mod, ph = ss.bode([self.zeros, self.poles, self.data.g], w=np.linspace(wp / 10, wa * 5, num=100000))
             stop_band = [w for w, mod in zip(w, mod) if mod <= (-self.data.Aa)]
             adjust = (((wa - stop_band[0]) / stop_band[0]) * self.data.des + 1)*(1 - 0.3045*self.data.des)

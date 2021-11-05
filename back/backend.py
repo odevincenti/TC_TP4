@@ -1,6 +1,7 @@
 import numpy as np
 from FilterClass import FilterType, FilterData, ApproxType
 from Approx.butterworth import Butterworth
+from Approx.bessel import Bessel
 
 class FilterSpace:
     def __init__(self):
@@ -12,12 +13,12 @@ class FilterSpace:
     # addFilter: Recibe parámetros para el filtro y si tienen sentido, lo crea.
     # Devuelve True si pudo crearlo, False si no.
     # OJO: LAS FRECUENCIAS SE INGRESAN EN RAD/S (Chaquear esto desde el front)
-    def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, n=None, Q=None, nmin=None, nmax=None, Qmax=None):
+    def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, n=None, Q=None, GD=None, nmin=None, nmax=None, Qmax=None):
         if not self.check_filter(filter_type, approx, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
             print("No se pudo crear el filtro")
             return False
         wp, wa = self.check_symmetry(filter_type, wp, wa)
-        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, n, Q, nmin, nmax, Qmax)
+        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, n, Q, GD, nmin, nmax, Qmax)
         if f.type != FilterType.ERR:
             self.filters.append(f)
         else:
@@ -74,9 +75,9 @@ class FilterSpace:
                 wp[0] = (wa[0] * wa[1]) / wp[1]
         return wp, wa
 
-def butterworth(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax):
+def butterworth(filter_type, wp, wa, Ap, Aa, des, n, Q, GD, nmin, nmax, Qmax):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Butterworth(filter_type, data, n, Q, nmin, nmax, Qmax)
+    f = Butterworth(filter_type, data, n, Q, GD, nmin, nmax, Qmax)
     return f
 
 def cheby1(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax):
@@ -94,12 +95,25 @@ def legendre(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax):
     f = Butterworth(filter_type, data, nmin, nmax, Qmax)
     return f
 
+def cauer(filter_type, wp, wa, Ap, Aa, des, n, Q, GD, nmin, nmax, Qmax):
+    data = FilterData(wp, wa, Ap, Aa, des)
+    f = Bessel(filter_type, data, n, Q, GD, nmin, nmax, Qmax)
+    return f
+
+def bessel(filter_type, wp, wa, Ap, Aa, des, n, Q, GD, nmin, nmax, Qmax):
+    data = FilterData(wp, wa, Ap, Aa, des)
+    f = Bessel(filter_type, data, n, Q, GD, nmin, nmax, Qmax)
+    return f
+
+
 # SWITCH
 switch_atypes = {
     0: butterworth,
     1: cheby1,
     2: cheby2,
     3: legendre,
+    4: cauer,
+    5: bessel
 }
 
 

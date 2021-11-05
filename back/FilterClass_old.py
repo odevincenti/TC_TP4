@@ -77,7 +77,7 @@ class FilterData:
 # ----------------------------------------------------------------------------------------------------------------------
 
 class Filter:
-    def __init__(self, filter_type, approx, filter_data, n, Q, nmin, nmax, Qmax):
+    def __init__(self, filter_type, approx, filter_data, n, Q, GD, nmin, nmax, Qmax):
         self.type = filter_type
         '''self.wp = wp
         self.wa = wa
@@ -124,7 +124,7 @@ class Filter:
 
     # get_n: A partir del n óptimo, calcula el orden del filtro tomando en cuenta las restricciones.
     def get_n(self, nmin, nmax):
-        n = self.get_best_n()
+        n = self.get_best_n(nmin, nmax)
         if n < nmin:
             n = nmin
         elif n > nmax:

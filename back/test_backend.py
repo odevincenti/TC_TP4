@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import scipy.signal as ss
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.BW, 1.0, 4.0, 0.5, 20, 50,  nmin=1, nmax=8, Qmax=150)
+FS.addFilter(FilterType.LP, ApproxType.BW, 1.0, 4.0, 0.5, 20, 100, GD=0.1, n=2, nmin=1, nmax=8, Qmax=150)
 #FS.addFilter(FilterType.HP, ApproxType.BW, 4.0, 1.0, 0.5, 20, 0,  nmin=1, nmax=8, Qmax=150)
 #FS.addFilter(FilterType.BP, ApproxType.BW, [2, 4], [1, 5], 0.5, 20, 100, nmin=1, nmax=8, Qmax=150)
 #FS.addFilter(FilterType.BR, ApproxType.BW, [1, 5], [2, 4], 0.5, 20, 100, nmin=1, nmax=8, Qmax=150)
