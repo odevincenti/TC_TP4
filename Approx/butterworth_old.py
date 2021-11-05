@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.signal as ss
-from FilterClass import Filter, ApproxType, ftypes
+from FilterClass_old import Filter, ApproxType, ftypes
 
 class Butterworth(Filter):
     def __init__(self, filter_type, filter_data, n, Q, nmin, nmax, Qmax):

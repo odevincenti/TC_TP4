@@ -1,6 +1,6 @@
 import numpy as np
-from FilterClassNO import FilterType, FilterData, ApproxType
-from Approx.butterNO import Butterworth
+from FilterClass import FilterType, FilterData, ApproxType
+from Approx.butterworth import Butterworth
 
 class FilterSpace:
     def __init__(self):
