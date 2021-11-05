@@ -1,5 +1,4 @@
-from backend import FilterSpace, FilterType, ApproxType
-import numpy as np
+from back.backend import FilterSpace, FilterType, ApproxType
 import matplotlib.pyplot as plt
 import scipy.signal as ss
 
