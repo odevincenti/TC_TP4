@@ -1,6 +1,6 @@
 import numpy as np
-from FilterClass import FilterType, FilterData, ApproxType
-from Approx.butterworth import Butterworth
+from FilterClassNO import FilterType, FilterData, ApproxType
+from Approx.butterNO import Butterworth
 
 class FilterSpace:
     def __init__(self):
@@ -12,11 +12,12 @@ class FilterSpace:
     # addFilter: Recibe parámetros para el filtro y si tienen sentido, lo crea.
     # Devuelve True si pudo crearlo, False si no.
     # OJO: LAS FRECUENCIAS SE INGRESAN EN RAD/S (Chaquear esto desde el front)
-    def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
+    def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, n=None, Q=None, nmin=None, nmax=None, Qmax=None):
         if not self.check_filter(filter_type, approx, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
             print("No se pudo crear el filtro")
             return False
-        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, nmin, nmax, Qmax)
+        wp, wa = self.check_symmetry(filter_type, wp, wa)
+        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, n, Q, nmin, nmax, Qmax)
         if f.type != FilterType.ERR:
             self.filters.append(f)
         else:
@@ -60,22 +61,35 @@ class FilterSpace:
             r = False
         return r
 
-def butterworth(filter_type, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
+    def check_symmetry(self, filter_type, wp, wa):
+        if filter_type == FilterType.BP:
+            if wp[0] * wp[1] <= wa[0] * wa[1]:
+                wa[1] = (wp[0] * wp[1]) / wa[0]
+            else:
+                wa[0] = (wp[0] * wp[1]) / wa[1]
+        elif filter_type == FilterType.BR:
+            if wa[0] * wa[1] <= wp[0] * wp[1]:
+                wp[1] = (wa[0] * wa[1]) / wp[0]
+            else:
+                wp[0] = (wa[0] * wa[1]) / wp[1]
+        return wp, wa
+
+def butterworth(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax):
+    data = FilterData(wp, wa, Ap, Aa, des)
+    f = Butterworth(filter_type, data, n, Q, nmin, nmax, Qmax)
+    return f
+
+def cheby1(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax):
     data = FilterData(wp, wa, Ap, Aa, des)
     f = Butterworth(filter_type, data, nmin, nmax, Qmax)
     return f
 
-def cheby1(filter_type, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
+def cheby2(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax):
     data = FilterData(wp, wa, Ap, Aa, des)
     f = Butterworth(filter_type, data, nmin, nmax, Qmax)
     return f
 
-def cheby2(filter_type, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
-    data = FilterData(wp, wa, Ap, Aa, des)
-    f = Butterworth(filter_type, data, nmin, nmax, Qmax)
-    return f
-
-def legendre(filter_type, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
+def legendre(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax):
     data = FilterData(wp, wa, Ap, Aa, des)
     f = Butterworth(filter_type, data, nmin, nmax, Qmax)
     return f

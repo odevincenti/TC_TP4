@@ -31,7 +31,7 @@ class FilterData:
         self.Ap = Ap
         self.Aa = Aa
         self.des = des
-        self.wan = None
+        #self.wan = None
         self.n = None
         self.wdes = None
         self.eps = None
@@ -44,7 +44,7 @@ class FilterData:
         print("Ap =", self.Ap)
         print("Aa =", self.Aa)
         print("des =", self.des)
-        print("wan =", self.wan)
+        #print("wan =", self.wan)
         print("n =", self.n)
         print("wdes =", self.wdes)
         print("eps =", self.eps)
@@ -77,7 +77,7 @@ class FilterData:
 # ----------------------------------------------------------------------------------------------------------------------
 
 class Filter:
-    def __init__(self, filter_type, approx, filter_data, nmin, nmax, Qmax):
+    def __init__(self, filter_type, approx, filter_data, n, Q, nmin, nmax, Qmax):
         self.type = filter_type
         '''self.wp = wp
         self.wa = wa
@@ -88,18 +88,19 @@ class Filter:
         self.Q = Q'''
         self.data = filter_data
         self.approx = approx
-        self.data.wan = self.get_wan()
+        # self.data.wan = self.get_wan()
         self.data.eps = self.get_eps(self.data.Ap)
-        self.data.n = self.get_n(nmin, nmax, Qmax)
-        self.data.wdes = self.get_wdes()
+        if n is not None: self.data.n = n
+        else: n = self.get_n(nmin, nmax)
+        self.data.wdes = self.get_wdes(n)
         self.num, self.den = self.get_numden()
         self.zeros, self.poles, self.data.k = self.get_zpk()
         while not self.check_Q(Qmax):
             self.data.n = self.data.n - 1
             self.num, self.den = self.get_numden()
             self.zeros, self.poles, self.data.k = self.get_zpk()
-        self.sos = self.get_sos()
-        self.H = None
+        #self.sos = self.get_sos()
+        #self.H = None
 
     # get_best_n: Calcula el n óptimo, depende de la aproximación. No toma en cuenta nmin y nmax.
     def get_best_n(self):
@@ -122,14 +123,13 @@ class Filter:
         return wan
 
     # get_n: A partir del n óptimo, calcula el orden del filtro tomando en cuenta las restricciones.
-    def get_n(self, nmin, nmax, Qmax):
+    def get_n(self, nmin, nmax):
         n = self.get_best_n()
         if n < nmin:
             n = nmin
         elif n > nmax:
             n = nmax
         return n
-        # todo: buscar como limitar Q
 
     '''# get_wo: Calcula la frecuencia fundamental wo.
     def get_wo(self):
@@ -202,16 +202,13 @@ class Filter:
             wdes = self.calculate_wdes(wdes_max, wdes_min)
 
         elif self.type == FilterType.BP:
-            wdes_min, wdes_max = [-1, -1], [-1, -1]
+            #wdes_min, wdes_max = [-1, -1], [-1, -1]
             wo = np.sqrt(self.data.wp[0]*self.data.wp[1])
             B = (self.data.wp[1] - self.data.wp[0])/wo
-            wdes_min[0] = 1/self.get_wlim(self.data.Aa, 1/self.data.wa[0])
-            wdes_max[0] = 1/self.get_wlim(self.data.Ap, 1/self.data.wp[0])
-            wdes_min[1] = self.get_wlim(self.data.Ap, self.data.wp[1])
-            wdes_max[1] = self.get_wlim(self.data.Aa, self.data.wa[1])
+            wod = np.power(self.data.wp[0], self.data.des) * np.power(self.data.wp[1], 1 - self.data.des)
             wdes = [-1, -1]
-            wdes[0] = self.data.wa[0] + (self.data.wp[0] - self.data.wa[0])/2 #self.calculate_wdes(wdes_min[0], wdes_max[0])
-            wdes[1] = self.data.wp[1] + (self.data.wa[1] - self.data.wp[1])/2 #self.calculate_wdes(wdes_min[1], wdes_max[1])
+            wdes[0] = np.abs(B*wod - np.sqrt(np.abs((B*wod)**2 - 4*wo**2)))/2
+            wdes[1] = np.abs(B*wod + np.sqrt(np.abs((B*wod)**2 - 4*wo**2)))/2
 
         elif self.type == FilterType.BR:
             wdes_min, wdes_max = [-1, -1], [-1, -1]
@@ -240,12 +237,10 @@ class Filter:
         print("type: " + ftypes[self.type])
         print("approx: " + atypes[self.approx])
         self.data.print_data()
-        print("sos:\n", self.sos)
+        #print("sos:\n", self.sos)
         print("\t \t", self.num)
         print("H(s) = -----------------------------------------------------------------")
         print("\t \t", self.den)
-        if self.H is not None: print(self.H)
+        #if self.H is not None: print(self.H)
         print("Zeros:", self.zeros)
         print("Poles:", self.poles)
-
-
