@@ -11,7 +11,6 @@ class Bessel(Filter):
         wan = self.data.wa * self.data.GD
         # wfn = self.ft * self.group_delay
         for n in range(nmin, nmax + 1):
-            n += 1
             z, p, k = ss.bessel(n, 1, 'lowpass', analog=True, output='zpk', norm='delay')
             w, h = ss.freqs_zpk(z, p, k, worN=np.logspace(-1, np.log10(wan) + 3, num=2000))
             retGroup_f = -np.diff(np.unwrap(np.angle(h))) / np.diff(

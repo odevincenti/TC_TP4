@@ -79,7 +79,7 @@ class FilterData:
 # ----------------------------------------------------------------------------------------------------------------------
 
 class Filter:
-    def __init__(self, filter_type, approx, filter_data, n=None, Q=None, GD = None, nmin=None, nmax=None, Qmax=None):
+    def __init__(self, filter_type, approx, filter_data, n=None, Q=None, GD=None, nmin=None, nmax=None, Qmax=None):
         self.type = filter_type
         '''self.wp = wp
         self.wa = wa
@@ -90,7 +90,6 @@ class Filter:
         self.Q = Q'''
         self.data = filter_data
         self.approx = approx
-        #self.data.wan = self.get_wan()
         self.data.eps = self.get_eps(self.data.Ap)
         self.data.GD = GD
         if n is not None: self.data.n = n
@@ -105,8 +104,7 @@ class Filter:
             if len(self.poles) == 0:
                 print("No existe aproximación que cumpla con el Q máximo pretendido")
         self.data.n = n
-        self.num, self.den = self.get_numden()
-        self.fix_gain()
+        self.data.g = self.data.g * self.fix_gain(self.get_numden())
         self.num, self.den = self.get_numden()
         #self.sos = self.get_sos()
         #self.H = None
@@ -154,7 +152,7 @@ class Filter:
 
         return z, p, g
 
-    def fix_gain(self):
+    def fix_gain(self, numden, ftype=None):
         '''G = 1
         if self.type == FilterType.LP or self.type == FilterType.BR:
             w = np.linspace(1E-6, 1E-5, 3)
@@ -169,18 +167,20 @@ class Filter:
         w, mod, ph = ss.bode([self.zeros, self.poles, self.data.g], w)
         k = np.power(10, mod[0]/20)
         return (G/k)#/np.power(10, self.data.Ap/20)'''
-        if self.type == FilterType.LP or self.type == FilterType.BR:
-            k = self.den[-1] / self.num[-1]
-        elif self.type == FilterType.HP:
-            k = self.den[0] / self.num[0]
-        elif self.type == FilterType.BP:
-            alpha = [-2*p.real for p in self.poles if p.imag > 0]
-            k = np.prod(alpha)
+        if ftype is None: ftype = self.type
+        num, den = numden
+        if ftype == FilterType.LP or ftype == FilterType.BR:
+            k = den[-1] / num[-1]
+        elif ftype == FilterType.HP:
+            k = den[0] / num[0]
+        elif ftype == FilterType.BP:
+            z, poles, g = ss.tf2zpk(num, den)
+            alpha = [-2*p.real for p in poles if p.imag > 0]
+            k = np.prod(alpha)/self.get_wan()# - np.log10(self.data.eps)
         else:
             self.filter_error()
             k = None
-        self.data.g = k * self.data.g
-        return
+        return k
 
     # get_n: A partir del n óptimo, calcula el orden del filtro tomando en cuenta las restricciones.
     def get_n(self, nmin, nmax):
@@ -221,7 +221,7 @@ class Filter:
         if self.data.Q is None:# and self.data.n is None:
             w, mod, ph = ss.bode([self.zeros, self.poles, self.data.g], w=np.linspace(wp / 10, wa * 5, num=100000))
             stop_band = [w for w, mod in zip(w, mod) if mod <= (-self.data.Aa)]
-            adjust = (((wa - stop_band[0]) / stop_band[0]) * self.data.des + 1)*(1 - 0.3045*self.data.des)
+            adjust = (((wa - stop_band[0]) / stop_band[0]) * self.data.des + 1)
         else:
             adjust = 1
 
