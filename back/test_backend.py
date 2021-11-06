@@ -47,10 +47,10 @@ def plot_template(ax, ftype, fdata, A=True):
     return
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.LG, 1, 1.5, 3, 30, 0, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.HP, ApproxType.LG, 1.5, 1.0, 3, 30, 0, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BP, ApproxType.LG, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BR, ApproxType.LG, [1, 5], [2, 4], 3, 30, 0, nmin=1, nmax=15, Qmax=150)
+FS.addFilter(FilterType.LP, ApproxType.CH1, 1, 1.5, 0.5, 20, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.HP, ApproxType.CH1, 1.5, 1.0, 0.5, 20, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BP, ApproxType.CH1, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BR, ApproxType.CH1, [1, 5], [2, 4], 0.5, 20, 10, rp=1, nmin=1, nmax=15, Qmax=150)
 butter = FS.filters[0]
 butter.print_self()
 

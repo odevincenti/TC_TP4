@@ -79,7 +79,7 @@ class FilterData:
 # ----------------------------------------------------------------------------------------------------------------------
 
 class Filter:
-    def __init__(self, filter_type, approx, filter_data, n=None, Q=None, GD=None, nmin=None, nmax=None, Qmax=None):
+    def __init__(self, filter_type, approx, filter_data, n=None, Q=None, rp=None, GD=None, nmin=None, nmax=None, Qmax=None):
         self.type = filter_type
         '''self.wp = wp
         self.wa = wa
@@ -91,6 +91,7 @@ class Filter:
         self.data = filter_data
         self.approx = approx
         self.data.eps = self.get_eps(self.data.Ap)
+        self.data.rp = rp
         self.data.GD = GD
         if n is not None: self.data.n = n
         else: n = self.get_n(nmin, nmax)

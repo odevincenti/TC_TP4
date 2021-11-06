@@ -3,8 +3,8 @@ import scipy.signal as ss
 from back.FilterClass import Filter, ApproxType
 
 class Butterworth(Filter):
-    def __init__(self, filter_type, filter_data, n, Q, GD, nmin, nmax, Qmax):
-        super().__init__(filter_type, ApproxType.BW, filter_data, n, Q, GD, nmin, nmax, Qmax)
+    def __init__(self, filter_type, filter_data, n, Q, rp, GD, nmin, nmax, Qmax):
+        super().__init__(filter_type, ApproxType.BW, filter_data, n, Q, rp, GD, nmin, nmax, Qmax)
 
     def get_best_n(self, nmin, nmax):
         n, wo = ss.buttord(self.data.wp, self.data.wa, self.data.Ap, self.data.Aa, True)
