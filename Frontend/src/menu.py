@@ -12,6 +12,8 @@ class MainWindowQ (QWidget, Ui_Form):
 
         self.setupUi(self)
 
+        self.indicador_curvas = 0
+        self.cant_curvas = 0
 
         #HIDESSSS
         self.label_19.hide()
@@ -31,8 +33,6 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
         self.label_23.hide()
-        self.N_min_slider_2.hide()
-        self.N_min_box_2.hide()
         self.N_max_slider.hide()
         self.N_max_box.hide()
         self.label_9.setText("N")
@@ -55,7 +55,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
         self.Edit_button.clicked.connect(self.Design_Stages)
 
-        self.Design_Stages_button.clicked.connect(self.Design_Stages)
+        self.Design_Stages_button.clicked.connect(self.edit_Stages)
 
 
 
@@ -98,10 +98,8 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
     def N_check_state (self,value):
-        if value ==0:
+        if value == 0:
             self.label_23.hide()
-            self.N_min_slider_2.hide()
-            self.N_min_box_2.hide()
             self.N_max_slider.hide()
             self.N_max_box.hide()
             self.label_9.setText("N")
@@ -114,7 +112,7 @@ class MainWindowQ (QWidget, Ui_Form):
             self.label_9.setText("Nmin")
 
     def Q_check_state (self,value):
-        if value ==0:
+        if value == 0:
             self.Q_slider.hide()
             self.Q_box.hide()
         else:
@@ -122,7 +120,7 @@ class MainWindowQ (QWidget, Ui_Form):
             self.Q_box.show()
 
     def Denom_check_state (self,value):
-        if value ==0:
+        if value == 0:
             self.Denom_slider.hide()
             self.Denom_box.hide()
         else:
@@ -131,10 +129,16 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
     def create_curve(self):
-        print("hello")
+        self.Curve_List_Select.addItems(('Curve' + str(self.indicador_curvas) + ":" + (self.aproximation_select.currentText()) + "__" + (self.filter_select.currentText())).split())
+
+        self.cant_curvas = self.cant_curvas + 1
+        self.indicador_curvas = self.indicador_curvas + 1
 
     def remove_curve(self):
         print("bye")
+
+    def edit_Stages(self):
+        print("edit")
 
     def Design_Stages (self):
         print("second")
@@ -142,10 +146,6 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
 
-
-
-
-        #FUNCIONESSSS
 
 
 
