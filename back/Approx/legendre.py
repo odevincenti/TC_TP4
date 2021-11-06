@@ -38,7 +38,7 @@ class Legendre(Filter):
             for i in range(1, k + 1):
                 ai = a0 * (2 * i + 1)
                 new_poly = ai * legendre(i)
-                poly = np.polyadd(poly, new_poly)
+                poly = np.polyadd(poly, new_poly)   # Sumatoria
             poly = np.polymul(poly, poly)  # Elevo al cuadrado
 
         else:  # n par
@@ -51,7 +51,7 @@ class Legendre(Filter):
                     if i % 2:  # i impar
                         ai = a1 * (2 * i + 1)/3
                         new_poly = ai * legendre(i)
-                        poly = np.polyadd(poly, new_poly)
+                        poly = np.polyadd(poly, new_poly)   # Sumatoria
             else:  # k par
                 a0 = 1 / np.sqrt((k + 1) * (k + 2))
                 poly = np.poly1d(a0)
@@ -60,7 +60,7 @@ class Legendre(Filter):
                     if not i % 2:  # i par
                         ai = a0 * (2 * i + 1)
                         new_poly = ai * legendre(i)
-                        poly = np.polyadd(poly, new_poly)
+                        poly = np.polyadd(poly, new_poly)   # Sumatoria
 
             poly = np.polymul(poly, poly)  # Elevo al cuadrado
             poly = np.polymul(poly, np.poly1d([1, 1]))  # Multiplico por (x + 1)
@@ -77,7 +77,6 @@ class Legendre(Filter):
         l_n = self.ln(n)
         num = np.poly1d([1])
         den = self.data.eps**2 * np.polyval(l_n, np.poly1d([1, 0, 0]))
-        #den = self.data.eps**2 * l_n
         den = np.polyadd(den, 1)
         z, p, k = ss.tf2zpk(num, den)
         p = [pole for pole in p if pole.real < 0]
