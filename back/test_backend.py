@@ -47,24 +47,24 @@ def plot_template(ax, ftype, fdata, A=True):
     return
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.CH1, 1, 1.5, 0.5, 20, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.HP, ApproxType.CH1, 1.5, 1.0, 0.5, 20, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BP, ApproxType.CH1, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BR, ApproxType.CH1, [1, 5], [2, 4], 0.5, 20, 10, rp=1, nmin=1, nmax=15, Qmax=150)
-butter = FS.filters[0]
-butter.print_self()
+FS.addFilter(FilterType.LP, ApproxType.CH2, 1, 1.5, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.HP, ApproxType.CH2, 1500, 1000, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BP, ApproxType.CH2, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BR, ApproxType.CH2, [1, 5], [2, 4], 0.5, 20, 100, rp=1, nmin=1, nmax=15, Qmax=150)
+fil = FS.filters[0]
+fil.print_self()
 
 # BODE
 fig, ax = plt.subplots(2, 1)
 axmod, axph = ax
-plot_template(axmod, butter.type, butter.data, False)
-b, a = butter.num, butter.den
+plot_template(axmod, fil.type, fil.data, False)
+b, a = fil.num, fil.den
 #w, h = ss.freqs(b, a)#, ss.findfreqs(b, a, 500, 'ba'))
 H = ss.TransferFunction(b, a)
 w, mod, ph = ss.bode(H)
 axmod.semilogx(w, mod)
 axph.semilogx(w, ph)
-fig.suptitle('Butterworth filter frequency response')
+fig.suptitle("Filter frequency response")
 axmod.set_xlabel('Frequency [radians / second]')
 axmod.set_ylabel('Amplitude [dB]')
 axmod.grid()
@@ -78,8 +78,8 @@ axph.grid()
 # POLOS Y CEROS
 fig2, ax2 = plt.subplots(1, 1)
 fig2.suptitle("Poles and Zeros")
-ax2.scatter(butter.zeros.real, butter.zeros.imag, marker='o', edgecolors="red", facecolors="None")
-ax2.scatter(butter.poles.real, butter.poles.imag, marker='x', color="blue")
+ax2.scatter(fil.zeros.real, fil.zeros.imag, marker='o', edgecolors="red", facecolors="None")
+ax2.scatter(fil.poles.real, fil.poles.imag, marker='x', color="blue")
 ax2.set_xlabel('Real')
 ax2.set_ylabel('Imaginary')
 ax2.grid()

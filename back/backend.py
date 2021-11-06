@@ -4,6 +4,7 @@ from Approx.butterworth import Butterworth
 from Approx.bessel import Bessel
 from Approx.legendre import Legendre
 from Approx.cheby1 import ChebyI
+from Approx.cheby2 import ChebyII
 
 class FilterSpace:
     def __init__(self):
@@ -89,7 +90,7 @@ def cheby1(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
 
 def cheby2(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Butterworth(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
+    f = ChebyII(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
     return f
 
 def legendre(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
@@ -97,12 +98,12 @@ def legendre(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
     f = Legendre(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
     return f
 
-def cauer(filter_type, wp, wa, Ap, Aa, des, n, Q, GD, rp, nmin, nmax, Qmax):
+def cauer(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
     data = FilterData(wp, wa, Ap, Aa, des)
     f = Bessel(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
     return f
 
-def bessel(filter_type, wp, wa, Ap, Aa, des, n, Q, GD, rp, nmin, nmax, Qmax):
+def bessel(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
     data = FilterData(wp, wa, Ap, Aa, des)
     f = Bessel(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
     return f
