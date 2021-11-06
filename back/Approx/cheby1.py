@@ -13,6 +13,4 @@ class ChebyI(Filter):
     def get_fun(self, n):
         if self.data.rp is None: self.data.rp = self.data.Ap/2
         z, p, k = ss.cheb1ap(n, self.data.rp)
-        #factor = np.power(self.get_eps(self.data.Ap), -1/n)
-        #p = [factor * pole for pole in p]
         return z, p, k

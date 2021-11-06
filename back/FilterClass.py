@@ -219,7 +219,7 @@ class Filter:
         return z, p, g
 
     def get_desfactor(self, wp, wa):
-        if self.data.Q is None:# and self.data.n is None:
+        if self.approx != ApproxType.CH2 and self.data.Q is None:# and self.data.n is None:
             w, mod, ph = ss.bode([self.zeros, self.poles, self.data.g], w=np.linspace(wp / 10, wa * 5, num=100000))
             stop_band = [w for w, mod in zip(w, mod) if mod <= (-self.data.Aa)]
             adjust = (((wa - stop_band[0]) / stop_band[0]) * self.data.des + 1)
