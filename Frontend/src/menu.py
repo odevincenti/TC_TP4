@@ -53,9 +53,9 @@ class MainWindowQ (QWidget, Ui_Form):
         self.add_curve_button.clicked.connect(self.create_curve)
         self.remove_curve_button.clicked.connect(self.remove_curve)
 
-        self.Edit_button.clicked.connect(self.Design_Stages)
+        self.Edit_button.clicked.connect(self.edit_Stages)
 
-        self.Design_Stages_button.clicked.connect(self.edit_Stages)
+        self.Design_Stages_button.clicked.connect(self.Design_Stages)
 
 
 
@@ -135,7 +135,9 @@ class MainWindowQ (QWidget, Ui_Form):
         self.indicador_curvas = self.indicador_curvas + 1
 
     def remove_curve(self):
-        print("bye")
+        self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
+
+        self.cant_curvas = self.cant_curvas - 1
 
     def edit_Stages(self):
         print("edit")
