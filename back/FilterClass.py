@@ -171,7 +171,8 @@ class Filter:
         if ftype is None: ftype = self.type
         num, den = numden
         if ftype == FilterType.LP or ftype == FilterType.BR:
-            k = den[-1] / num[-1]
+            if num[-1] != 0: k = den[-1] / num[-1]
+            else: k = 1
         elif ftype == FilterType.HP:
             k = den[0] / num[0]
         elif ftype == FilterType.BP:

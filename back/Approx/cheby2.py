@@ -11,8 +11,8 @@ class ChebyII(Filter):
         return n
 
     def get_fun(self, n):
-        if self.data.rp is None: self.data.rp = self.data.Ap
-        z, p, k = ss.cheb2ap(n, self.data.rp + self.data.Aa)
+        #if self.data.rp is None: self.data.rp = self.data.Ap
+        z, p, k = ss.cheb2ap(n, self.data.Aa)
         return z, p, k
 
     def denormalize(self):

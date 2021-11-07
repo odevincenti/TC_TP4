@@ -5,6 +5,7 @@ from Approx.bessel import Bessel
 from Approx.legendre import Legendre
 from Approx.cheby1 import ChebyI
 from Approx.cheby2 import ChebyII
+from Approx.cauer import Cauer
 
 class FilterSpace:
     def __init__(self):
@@ -100,7 +101,7 @@ def legendre(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
 
 def cauer(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Bessel(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
+    f = Cauer(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
     return f
 
 def bessel(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):

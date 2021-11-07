@@ -1,3 +1,5 @@
+import numpy as np
+
 from back.backend import FilterSpace, FilterType, ApproxType
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
@@ -47,10 +49,10 @@ def plot_template(ax, ftype, fdata, A=True):
     return
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.CH2, 1, 1.5, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.HP, ApproxType.CH2, 1500, 1000, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BP, ApproxType.CH2, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BR, ApproxType.CH2, [1, 5], [2, 4], 0.5, 20, 100, rp=1, nmin=1, nmax=15, Qmax=150)
+FS.addFilter(FilterType.LP, ApproxType.C, 1, 1.5, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.HP, ApproxType.C, 1500, 1000, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BP, ApproxType.C, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BR, ApproxType.C, [1, 5], [2, 4], 0.5, 20, 0, rp=1, nmin=1, nmax=15, Qmax=150)
 fil = FS.filters[0]
 fil.print_self()
 
@@ -59,9 +61,11 @@ fig, ax = plt.subplots(2, 1)
 axmod, axph = ax
 plot_template(axmod, fil.type, fil.data, False)
 b, a = fil.num, fil.den
-#w, h = ss.freqs(b, a)#, ss.findfreqs(b, a, 500, 'ba'))
+wmin = min(fil.data.wp, fil.data.wa)/10 if fil.type <= FilterType.HP else min(fil.data.wp[0], fil.data.wa[0])/10
+wmax = max(fil.data.wp, fil.data.wa)*10 if fil.type <= FilterType.HP else max(fil.data.wp[1], fil.data.wa[1])*10
+w = np.linspace(wmin, wmax, int(wmax/wmin * 10))
 H = ss.TransferFunction(b, a)
-w, mod, ph = ss.bode(H)
+w, mod, ph = ss.bode(H, w)
 axmod.semilogx(w, mod)
 axph.semilogx(w, ph)
 fig.suptitle("Filter frequency response")
