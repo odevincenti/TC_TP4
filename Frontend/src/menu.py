@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import QWidget
 
 from Frontend.src.ui.tp4 import Ui_Form
 
+from Frontend.src.matplot import Matplotlib
+
 
 class MainWindowQ (QWidget, Ui_Form):
 
@@ -11,9 +13,7 @@ class MainWindowQ (QWidget, Ui_Form):
         super().__init__(*args,**kwargs)
 
         self.setupUi(self)
-
-        self.indicador_curvas = 0
-        self.cant_curvas = 0
+        self.error = 0
 
         #HIDESSSS
         self.label_19.hide()
@@ -41,6 +41,7 @@ class MainWindowQ (QWidget, Ui_Form):
         #BOXESSSSSSS
         self.filter_select.currentIndexChanged.connect(self.filter_change)
         self.aproximation_select.currentIndexChanged.connect(self.aproximation_change)
+        self.type_graph_select.currentIndexChanged.connect(self.type_graph_change)
 
 
         #CHECK BOXESSSSS
@@ -94,7 +95,21 @@ class MainWindowQ (QWidget, Ui_Form):
             self.label_14.show()
             self.Denom_check.show()
 
-
+    def type_graph_change(self,value):
+        if value == 0:
+            print(0)
+        elif value == 1:
+            print(1)
+        elif value == 2:
+            print(2)
+        elif value == 3:
+            print(3)
+        elif value == 4:
+            print(4)
+        elif value == 5:
+            print(5)
+        elif value == 6:
+            print(6)
 
 
     def N_check_state (self,value):
@@ -129,10 +144,9 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
     def create_curve(self):
-        self.Curve_List_Select.addItems(('Curve' + str(self.indicador_curvas) + ":" + (self.aproximation_select.currentText()) + "__" + (self.filter_select.currentText())).split())
+        if self.error == 0:
+            self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (self.filter_select.currentText())).split())
 
-        self.cant_curvas = self.cant_curvas + 1
-        self.indicador_curvas = self.indicador_curvas + 1
 
     def remove_curve(self):
         self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
