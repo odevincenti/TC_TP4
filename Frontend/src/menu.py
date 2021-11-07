@@ -1,11 +1,7 @@
-
 from PyQt5.QtWidgets import QWidget
-
 from Frontend.src.ui.tp4 import Ui_Form
-
-from Frontend.src.matplot import Matplotlib
+from Frontend.src.mplwidget import MplWidget
 from Frontend.src.edit_window import EditWindow
-
 
 class MainWindowQ (QWidget, Ui_Form):
 
@@ -62,7 +58,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
         #GRAPHHHHHH
-
+        #self.MplWidget.show_toolbar(self.Toolbar1)
 
 
 

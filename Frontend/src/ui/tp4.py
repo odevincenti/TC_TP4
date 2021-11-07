@@ -290,10 +290,10 @@ class Ui_Form(object):
         self.verticalLayout_9.setObjectName("verticalLayout_9")
         self.verticalLayout_13 = QtWidgets.QVBoxLayout()
         self.verticalLayout_13.setObjectName("verticalLayout_13")
-        self.Graph_Widget = QtWidgets.QWidget(Form)
-        self.Graph_Widget.setStyleSheet("background:blue;")
-        self.Graph_Widget.setObjectName("Graph_Widget")
-        self.verticalLayout_13.addWidget(self.Graph_Widget)
+        self.MplWidget = MplWidget(Form)
+        self.MplWidget.setStyleSheet("background:blue;")
+        self.MplWidget.setObjectName("MplWidget")
+        self.verticalLayout_13.addWidget(self.MplWidget)
         self.verticalLayout_9.addLayout(self.verticalLayout_13)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.verticalLayout_9.addItem(spacerItem1)
@@ -543,6 +543,7 @@ class Ui_Form(object):
         self.Edit_button.setText(_translate("Form", "EDIT"))
         self.add_curve_button.setText(_translate("Form", "+"))
         self.remove_curve_button.setText(_translate("Form", "-"))
+from Frontend.src.mplwidget import MplWidget
 
 
 if __name__ == "__main__":
