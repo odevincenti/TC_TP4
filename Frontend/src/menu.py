@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget
 from Frontend.src.ui.tp4 import Ui_Form
 
 from Frontend.src.matplot import Matplotlib
+from Frontend.src.edit_window import EditWindow
 
 
 class MainWindowQ (QWidget, Ui_Form):
@@ -14,6 +15,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
         self.setupUi(self)
         self.error = 0
+        self.cant_curvas = 0
 
         #HIDESSSS
         self.label_19.hide()
@@ -57,6 +59,9 @@ class MainWindowQ (QWidget, Ui_Form):
         self.Edit_button.clicked.connect(self.edit_Stages)
 
         self.Design_Stages_button.clicked.connect(self.Design_Stages)
+
+
+        #GRAPHHHHHH
 
 
 
@@ -146,15 +151,18 @@ class MainWindowQ (QWidget, Ui_Form):
     def create_curve(self):
         if self.error == 0:
             self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (self.filter_select.currentText())).split())
+            self.cant_curvas = self.cant_curvas + 1
 
 
     def remove_curve(self):
-        self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
-
-        self.cant_curvas = self.cant_curvas - 1
+        if self.cant_curvas > 0:
+            self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
+            self.cant_curvas = self.cant_curvas - 1
 
     def edit_Stages(self):
         print("edit")
+        if self.cant_curvas > 0:
+            self.edit_wind = EditWindow()
 
     def Design_Stages (self):
         print("second")
