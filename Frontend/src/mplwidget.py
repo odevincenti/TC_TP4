@@ -21,4 +21,6 @@ class MplWidget(QWidget):
         #self.canvas.draw()
 
     def show_toolbar(self, layout):
+        #self.toolbar.setStyleSheet("background-color:Gray;")
         layout.addWidget(NavigationToolbar(self.canvas, self))
+        self.canvas.toolbar.setStyleSheet("backgroud-color:Red;")

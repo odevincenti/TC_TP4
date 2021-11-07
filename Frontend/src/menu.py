@@ -58,7 +58,8 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
         #GRAPHHHHHH
-        #self.MplWidget.show_toolbar(self.Toolbar1)
+        #crear el box para la toolbar
+        self.MplWidget.show_toolbar(self.Toolbar1)
 
 
 
