@@ -30,7 +30,6 @@ class MainWindowQ (QWidget, Ui_Form):
         self.Q_slider.hide()
         self.Q_box.hide()
 
-
         self.label_23.hide()
         self.N_max_slider.hide()
         self.N_max_box.hide()
@@ -61,6 +60,7 @@ class MainWindowQ (QWidget, Ui_Form):
         #GRAPHHHHHH
         #crear el box para la toolbar
         self.MplWidget.show_toolbar(self.Toolbar1)
+
 
 
 

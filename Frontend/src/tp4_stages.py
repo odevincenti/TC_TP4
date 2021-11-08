@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QWidget
 from Frontend.src.ui.tp4_stages import Ui_Form
 from Frontend.src.mplwidget import MplWidget
-from Frontend.src.edit_window import EditWindow
 
 class Stages (QWidget, Ui_Form):
 
@@ -11,3 +10,12 @@ class Stages (QWidget, Ui_Form):
 
         self.setupUi(self)
         self.show()
+
+        #HIDESSSSS
+        self.Q_valor.hide()
+        self.fo_valor.hide()
+        self.DR_valor.hide()
+        self.label_28.hide()
+        self.label_31.hide()
+
+        self.MplWidget2.show_toolbar(self.Toolbar2)

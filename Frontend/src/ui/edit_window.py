@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(764, 607)
+        Form.resize(764, 620)
         Form.setStyleSheet("background:rgb(90,90,90);")
         self.horizontalLayout = QtWidgets.QHBoxLayout(Form)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -22,16 +22,6 @@ class Ui_Form(object):
         self.verticalLayout_11.setObjectName("verticalLayout_11")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.GoBack_Button_2 = QtWidgets.QPushButton(Form)
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.GoBack_Button_2.setFont(font)
-        self.GoBack_Button_2.setStyleSheet("background:white;\n"
-"")
-        self.GoBack_Button_2.setObjectName("GoBack_Button_2")
-        self.horizontalLayout_3.addWidget(self.GoBack_Button_2)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem)
         self.label_3 = QtWidgets.QLabel(Form)
@@ -425,7 +415,6 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.GoBack_Button_2.setText(_translate("Form", "<-"))
         self.label_3.setText(_translate("Form", "EDIT CURVE"))
         self.label_11.setText(_translate("Form", "FILTER TYPE"))
         self.filter_select.setItemText(0, _translate("Form", "Low-Pass"))
