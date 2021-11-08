@@ -277,7 +277,7 @@ class Filter:
         gd = np.divide(- np.diff(ph), np.diff(w))
         gd = np.append(gd, gd[len(gd) - 1])
         if self.data.GD is not None: GD = self.data.GD
-        elif gd[0] != 0:
+        elif gd[0] != 0 or np.isnan(gd[0]):
             GD = 1/gd[0]
         else:
             gd[0] = 1E-15
