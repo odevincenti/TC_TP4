@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget
 from Frontend.src.ui.tp4 import Ui_Form
 from Frontend.src.mplwidget import MplWidget
 from Frontend.src.edit_window import EditWindow
+from Frontend.src.tp4_stages import Stages
 
 class MainWindowQ (QWidget, Ui_Form):
 
@@ -78,6 +79,10 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
         elif value == 2 or value == 3:
+            self.label_17.hide()
+            self.label_18.hide()
+            self.fa_valor.hide()
+            self.fp_valor.hide()
             self.label_19.show()
             self.label_20.show()
             self.label_21.show()
@@ -149,9 +154,12 @@ class MainWindowQ (QWidget, Ui_Form):
         if self.error == 0:
             self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (self.filter_select.currentText())).split())
             self.cant_curvas = self.cant_curvas + 1
-
+        else:
+            print("ERROR")
+            self.error = 0
 
     def remove_curve(self):
+        print("remove")
         if self.cant_curvas > 0:
             self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
             self.cant_curvas = self.cant_curvas - 1
@@ -163,6 +171,9 @@ class MainWindowQ (QWidget, Ui_Form):
 
     def Design_Stages (self):
         print("second")
+        if self.cant_curvas > 0:
+            self.stages = Stages()
+
 
 
 
