@@ -294,6 +294,9 @@
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
                   </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -324,6 +327,9 @@
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
+                  </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -356,6 +362,9 @@
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
                   </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -386,6 +395,9 @@
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
+                  </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -418,6 +430,9 @@
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
                   </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -448,6 +463,9 @@
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
+                  </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -480,6 +498,9 @@
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
                   </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -510,6 +531,9 @@
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
+                  </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -542,9 +566,22 @@
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
                   </property>
+                  <property name="maximum">
+                   <double>2000000000.000000000000000</double>
+                  </property>
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="styleSheet">
+                 <string notr="true">color:red;</string>
+                </property>
+                <property name="text">
+                 <string>Error: Los datos no son válidos para crear la curva</string>
+                </property>
+               </widget>
               </item>
               <item>
                <spacer name="verticalSpacer_4">
@@ -771,19 +808,6 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_27">
              <item>
-              <spacer name="horizontalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
               <widget class="QLabel" name="label_23">
                <property name="font">
                 <font>
@@ -831,12 +855,8 @@
                </property>
               </widget>
              </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_18">
              <item>
-              <spacer name="horizontalSpacer_4">
+              <spacer name="horizontalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -848,6 +868,10 @@
                </property>
               </spacer>
              </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_18">
              <item>
               <widget class="QLabel" name="label_14">
                <property name="font">
@@ -902,6 +926,19 @@
                 <number>100</number>
                </property>
               </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </item>

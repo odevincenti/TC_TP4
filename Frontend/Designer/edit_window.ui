@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>764</width>
-    <height>607</height>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,24 +21,6 @@
     <layout class="QVBoxLayout" name="verticalLayout_11">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QPushButton" name="GoBack_Button_2">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background:white;
-</string>
-         </property>
-         <property name="text">
-          <string>&lt;-</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <spacer name="horizontalSpacer_6">
          <property name="orientation">
