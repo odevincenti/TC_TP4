@@ -1,12 +1,12 @@
 import numpy as np
 from back.FilterClass import FilterType, FilterData, ApproxType
-from Approx.butterworth import Butterworth
-from Approx.bessel import Bessel
-from Approx.legendre import Legendre
-from Approx.cheby1 import ChebyI
-from Approx.cheby2 import ChebyII
-from Approx.cauer import Cauer
-from Approx.gauss import Gauss
+from back.Approx.butterworth import Butterworth
+from back.Approx.bessel import Bessel
+from back.Approx.legendre import Legendre
+from back.Approx.cheby1 import ChebyI
+from back.Approx.cheby2 import ChebyII
+from back.Approx.cauer import Cauer
+from back.Approx.gauss import Gauss
 
 class FilterSpace:
     def __init__(self):
