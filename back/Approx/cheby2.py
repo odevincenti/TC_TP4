@@ -3,8 +3,8 @@ import scipy.signal as ss
 from back.FilterClass import Filter, ApproxType, FilterType
 
 class ChebyII(Filter):
-    def __init__(self, filter_type, filter_data, n, Q, rp, GD, nmin, nmax, Qmax):
-        super().__init__(filter_type, ApproxType.CH2, filter_data, n, Q, rp, GD, nmin, nmax, Qmax)
+    def __init__(self, filter_type, filter_data, n, Q, nmin, nmax, Qmax, GD):
+        super().__init__(filter_type, ApproxType.CH2, filter_data, n, Q, nmin, nmax, Qmax, None, GD, None)
 
     def get_best_n(self, nmin, nmax):
         n, wo = ss.cheb2ord(self.data.wp, self.data.wa, self.data.Ap, self.data.Aa, True)

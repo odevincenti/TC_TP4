@@ -42,17 +42,22 @@ def plot_template(ax, ftype, fdata, A=True):
         r2 = Rectangle((fdata.wp[1], Ap), fdata.wp[1] * 10 - fdata.wp[1], Aa*4 - Ap, color="orange", alpha=0.5)
         ax.set_xlim([fdata.wp[0]/10, fdata.wp[1]*10 - fdata.wp[1]])
 
-    ax.add_patch(rp)
-    ax.add_patch(ra)
+    elif ftype == FilterType.GD:
+        ax.set_xlim([fdata.wp/10, fdata.wp * 10])
+
+    if ftype != FilterType.GD:
+        ax.add_patch(rp)
+        ax.add_patch(ra)
     if r2 is not None: ax.add_patch(r2)
 
     return
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.C, 1, 1.5, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.HP, ApproxType.C, 1500, 1000, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BP, ApproxType.C, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
+FS.addFilter(FilterType.LP, ApproxType.LG, 1, 1.5, 3, 30, 0, rp=1, GD=2, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.HP, ApproxType.BW, 4000, 1000, 0.5, 20, 20, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BP, ApproxType.LG, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.BR, ApproxType.C, [1, 5], [2, 4], 0.5, 20, 0, rp=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.GD, ApproxType.B, 600, 1500, 3, 30, 0, n=7, tol=20, GD=10E-3, nmin=1, nmax=15, Qmax=150)
 fil = FS.filters[0]
 fil.print_self()
 
@@ -61,8 +66,9 @@ fig, ax = plt.subplots(2, 1)
 axmod, axph = ax
 plot_template(axmod, fil.type, fil.data, False)
 b, a = fil.num, fil.den
-wmin = min(fil.data.wp, fil.data.wa)/10 if fil.type <= FilterType.HP else min(fil.data.wp[0], fil.data.wa[0])/10
-wmax = max(fil.data.wp, fil.data.wa)*10 if fil.type <= FilterType.HP else max(fil.data.wp[1], fil.data.wa[1])*10
+wmin, wmax = fil.get_wminmax()
+#wmin = min(fil.data.wp, fil.data.wa)/10 if fil.type <= FilterType.HP elif fil.type <= FilterType.GD else min(fil.data.wp[0], fil.data.wa[0])/10
+#wmax = max(fil.data.wp, fil.data.wa)*10 if fil.type <= FilterType.HP else max(fil.data.wp[1], fil.data.wa[1])*10
 w = np.linspace(wmin, wmax, int(wmax/wmin * 10))
 H = ss.TransferFunction(b, a)
 w, mod, ph = ss.bode(H, w)
@@ -87,6 +93,20 @@ ax2.scatter(fil.poles.real, fil.poles.imag, marker='x', color="blue")
 ax2.set_xlabel('Real')
 ax2.set_ylabel('Imaginary')
 ax2.grid()
+
+# RETARDO DE GRUPO
+figGD, axGD = plt.subplots(1, 1)
+wmin, wmax = fil.get_wminmax()
+#wmin = min(fil.data.wp, fil.data.wa)/10 if fil.type <= FilterType.HP elif fil.type <= FilterType.GD else min(fil.data.wp[0], fil.data.wa[0])/10
+#wmax = max(fil.data.wp, fil.data.wa)*10 if fil.type <= FilterType.HP else max(fil.data.wp[1], fil.data.wa[1])*10
+w = np.linspace(0, wmax*2/3, int(wmax/wmin * 10))
+w, gd = fil.get_GD(w)
+axGD.plot(w, gd)
+#axGD.set_ylim([0, 1])
+figGD.suptitle("Filter group delay")
+axGD.set_xlabel('Frequency [radians / second]')
+axGD.set_ylabel('Group Delay')
+axGD.grid()
 
 plt.show()
 

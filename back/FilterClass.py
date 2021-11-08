@@ -8,7 +8,8 @@ class FilterType(IntEnum):
     HP = 1
     BP = 2
     BR = 3
-    ERR = 4
+    GD = 4
+    ERR = 5
 
 # TIPOS DE APROXIMACIONES
 class ApproxType(IntEnum):
@@ -20,7 +21,7 @@ class ApproxType(IntEnum):
     B = 5
     G = 6
 
-ftypes = ["lowpass", "highpass", "bandpass", "bandstop"]
+ftypes = ["lowpass", "highpass", "bandpass", "bandstop", "group delay"]
 atypes = ["Butterworth", "Cheby I", "Cheby II", "Legendre", "Cauer", "Bessel", "Gauss"]
 
 # DATOS PARA EL FILTRO
@@ -31,13 +32,12 @@ class FilterData:
         self.Ap = Ap
         self.Aa = Aa
         self.des = des
-        #self.wan = None
         self.n = None
-        self.wdes = None
+        self.g = None
         self.eps = None
         self.Q = None
         self.GD = None
-        self.g = None
+        self.tol = None
 
     def print_data(self):
         print("wp =", self.wp)
@@ -45,9 +45,7 @@ class FilterData:
         print("Ap =", self.Ap)
         print("Aa =", self.Aa)
         print("des =", self.des)
-        #print("wan =", self.wan)
         print("n =", self.n)
-        print("wdes =", self.wdes)
         print("eps =", self.eps)
         print("g =", self.g)
         print("GD =", self.GD)
@@ -79,7 +77,7 @@ class FilterData:
 # ----------------------------------------------------------------------------------------------------------------------
 
 class Filter:
-    def __init__(self, filter_type, approx, filter_data, n=None, Q=None, rp=None, GD=None, nmin=None, nmax=None, Qmax=None):
+    def __init__(self, filter_type, approx, filter_data, n=None, Q=None, nmin=None, nmax=None, Qmax=None, rp=None, GD=None, tol=None):
         self.type = filter_type
         '''self.wp = wp
         self.wa = wa
@@ -93,6 +91,7 @@ class Filter:
         self.data.eps = self.get_eps(self.data.Ap)
         self.data.rp = rp
         self.data.GD = GD
+        self.data.tol = tol
         if n is not None: self.data.n = n
         else: n = self.get_n(nmin, nmax)
         if Q is not None: self.data.Q = Q
@@ -107,8 +106,6 @@ class Filter:
         self.data.n = n
         self.data.g = self.data.g * self.fix_gain(self.get_numden())
         self.num, self.den = self.get_numden()
-        #self.sos = self.get_sos()
-        #self.H = None
 
     # get_best_n: Calcula el n óptimo, depende de la aproximación. No toma en cuenta nmin y nmax.
     def get_best_n(self, nmin, nmax):
@@ -125,15 +122,18 @@ class Filter:
             wan = (self.data.wa[1] - self.data.wa[0])/(self.data.wp[1] - self.data.wp[0])
         elif self.type == FilterType.BR:
             wan = (self.data.wp[1] - self.data.wp[0])/(self.data.wa[1] - self.data.wa[0])
+        elif self.type == FilterType.GD:
+            if self.data.GD is None: self.data.GD = 1E-3
+            wan = self.data.wp*self.data.GD
         else:
             wan = 0
             self.filter_error()
         return wan
 
     def denormalize(self):
-        if self.approx == ApproxType.B:
-            return self.zeros, self.poles, self.data.g
-        elif self.type == FilterType.LP:
+        #if self.approx == ApproxType.B:
+            #return self.zeros, self.poles, self.data.g
+        if self.type == FilterType.LP:
             self.get_desfactor(1, self.data.wa/self.data.wp)
             z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, self.data.wp)
         elif self.type == FilterType.HP:
@@ -147,6 +147,8 @@ class Filter:
             self.get_desfactor(1, (self.data.wp[1] - self.data.wp[0])/(self.data.wa[1] - self.data.wa[0]))
             z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]), self.data.wp[1] - self.data.wp[0])
             self.data.n = len(p)
+        elif self.type == FilterType.GD:
+            z, p, g = ss.bessel(self.data.n, np.divide(1, self.data.GD), analog=True, output="zpk", norm='delay')
         else:
             self.filter_error()
             z, p, g = [None, None, None]
@@ -170,15 +172,16 @@ class Filter:
         return (G/k)#/np.power(10, self.data.Ap/20)'''
         if ftype is None: ftype = self.type
         num, den = numden
-        if ftype == FilterType.LP or ftype == FilterType.BR:
+        if ftype == FilterType.LP or ftype == FilterType.BR or ftype == FilterType.GD:
             if num[-1] != 0: k = den[-1] / num[-1]
             else: k = 1
         elif ftype == FilterType.HP:
             k = den[0] / num[0]
+            if self.approx == ApproxType.C: k = k * 10**(-self.data.Ap/20)
         elif ftype == FilterType.BP:
             z, poles, g = ss.tf2zpk(num, den)
             alpha = [-2*p.real for p in poles if p.imag > 0]
-            k = np.prod(alpha)/self.get_wan()# - np.log10(self.data.eps)
+            k = np.prod(alpha)/(num[0])**(1/len(num))# - np.log10(self.data.eps)
         else:
             self.filter_error()
             k = None
@@ -220,7 +223,7 @@ class Filter:
         return z, p, g
 
     def get_desfactor(self, wp, wa):
-        if self.approx != ApproxType.CH2 and self.data.Q is None:# and self.data.n is None:
+        if self.approx != ApproxType.CH2 and self.data.Q is None:
             w, mod, ph = ss.bode([self.zeros, self.poles, self.data.g], w=np.linspace(wp / 10, wa * 5, num=100000))
             stop_band = [w for w, mod in zip(w, mod) if mod <= (-self.data.Aa)]
             adjust = (((wa - stop_band[0]) / stop_band[0]) * self.data.des + 1)
@@ -261,20 +264,49 @@ class Filter:
         eps = np.sqrt(np.power(10, A/10) - 1)
         return eps
 
+    def get_GD(self, w=None, z=None, p=None, k=None):
+        if w is None:
+            wmin, wmax = self.get_wminmax()
+            w = np.logspace(wmin, wmax, num=int(10*wmax/wmin))
+        if z is None: z = self.zeros
+        if p is None: p = self.poles
+        if k is None: k = self.data.g
+
+        w, mod, ph = ss.bode([z, p, k], w)
+        gd = np.divide(- np.diff(ph), np.diff(w))
+        gd = np.append(gd, gd[len(gd) - 1])
+        if self.data.GD is not None: GD = self.data.GD
+        else: GD = 1/gd[0]
+        gd = gd*GD/gd[0]
+
+        return w, gd
+
+    def get_wminmax(self):
+        if self.type <= FilterType.HP:
+            wmin = min(self.data.wp, self.data.wa) / 10
+            wmax = max(self.data.wp, self.data.wa) * 10
+        elif self.type == FilterType.GD:
+            wmin = self.data.wp / 10
+            wmax = self.data.wp * 10
+        else:
+            wmin = min(self.data.wp[0], self.data.wa[0]) / 10
+            wmax = max(self.data.wp[1], self.data.wa[1]) * 10
+        return wmin, wmax
+
     '''def get_wlim(self, A, wp):
         wlim = -1.0
-        return wlim'''
+        return wlim
 
-    '''def calculate_wdes(self, wdes_min, wdes_max):
+    def calculate_wdes(self, wdes_min, wdes_max):
         if wdes_min != -1 and wdes_max != -1:
             wdes = wdes_min + (wdes_max - wdes_min) * self.data.des
         else:
             print("Error al calcular wlim")
             wdes = -1
             self.filter_error()
-        return wdes'''
+        return wdes
 
-    '''def get_wdes(self):
+    def get_wdes(self):
         if self.type == FilterType.LP:
             wdes_min = self.get_wlim(self.data.Ap, self.data.wp)
             wdes_max = self.get_wlim(self.data.Aa, self.data.wa)

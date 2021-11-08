@@ -17,12 +17,12 @@ class FilterSpace:
     # addFilter: Recibe parámetros para el filtro y si tienen sentido, lo crea.
     # Devuelve True si pudo crearlo, False si no.
     # OJO: LAS FRECUENCIAS SE INGRESAN EN RAD/S (Chaquear esto desde el front)
-    def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, n=None, Q=None, rp=None, GD=None, nmin=None, nmax=None, Qmax=None):
-        if not self.check_filter(filter_type, approx, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
+    def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, n=None, Q=None, nmin=None, nmax=None, Qmax=None, rp=None, GD=None, tol=None):
+        if not self.check_filter(filter_type, approx, wp, wa, Ap, Aa):
             print("No se pudo crear el filtro")
             return False
         wp, wa = self.check_symmetry(filter_type, wp, wa)
-        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, n, Q, rp, GD, nmin, nmax, Qmax)
+        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, n, Q, nmin, nmax, Qmax, rp, GD, tol)
         if f.type != FilterType.ERR:
             self.filters.append(f)
         else:
@@ -31,7 +31,7 @@ class FilterSpace:
         return True
 
     # check_filter: Revisa que el filtro sea válido. Devuelve True si lo es, False si no.
-    def check_filter(self, filter_type, approx, wp, wa, Ap, Aa, des, nmin, nmax, Qmax):
+    def check_filter(self, filter_type, approx, wp, wa, Ap, Aa):
         r = True
         r = r and self.check_freq(filter_type, wp)
         r = r and self.check_freq(filter_type, wa)
@@ -47,6 +47,9 @@ class FilterSpace:
         elif r and filter_type == FilterType.BR and not (wp[0] < wa[0] < wa[1] < wp[1]):
             print("El orden de las frecuencias de atenuación y paso está mal")
             r = False
+        elif r and filter_type == FilterType.GD and not (approx != ApproxType.B or approx != ApproxType.G):
+            print("Sólo se permiten filtros de retardo de grupo con aproximaciones de Bessel o de Gauss")
+            r = False
         if Ap > Aa:
             r = False
         return r
@@ -58,7 +61,7 @@ class FilterSpace:
             len_w = len(w)
         except TypeError:
             len_w = 1
-        if (filter_type == FilterType.LP or filter_type == FilterType.HP) and len_w != 1:
+        if (filter_type == FilterType.LP or filter_type == FilterType.HP or filter_type == FilterType.GD) and len_w != 1:
             print("ERROR: La frecuencia de paso o atenuación ingresada no es un único número")
             r = False
         elif (filter_type == FilterType.BP or filter_type == FilterType.BR) and len_w != 2:
@@ -79,36 +82,40 @@ class FilterSpace:
                 wp[0] = (wa[0] * wa[1]) / wp[1]
         return wp, wa
 
-def butterworth(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
+def butterworth(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Butterworth(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
+    f = Butterworth(filter_type, data, n, Q, nmin, nmax, Qmax, GD)
     return f
 
-def cheby1(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
+def cheby1(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = ChebyI(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
+    f = ChebyI(filter_type, data, n, Q, nmin, nmax, Qmax, rp, GD)
     return f
 
-def cheby2(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
+def cheby2(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = ChebyII(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
+    f = ChebyII(filter_type, data, n, Q, nmin, nmax, Qmax, GD)
     return f
 
-def legendre(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
+def legendre(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Legendre(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
+    f = Legendre(filter_type, data, n, Q, nmin, nmax, Qmax, GD)
     return f
 
-def cauer(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
+def cauer(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Cauer(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
+    f = Cauer(filter_type, data, n, Q, nmin, nmax, Qmax, GD)
     return f
 
-def bessel(filter_type, wp, wa, Ap, Aa, des, n, Q, rp, GD, nmin, nmax, Qmax):
+def bessel(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Bessel(filter_type, data, n, Q, rp, GD, nmin, nmax, Qmax)
+    f = Bessel(filter_type, data, n, Q, nmin, nmax, Qmax, GD, tol)
     return f
 
+def gauss(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
+    data = FilterData(wp, wa, Ap, Aa, des)
+    f = Bessel(filter_type, data, n, Q, nmin, nmax, Qmax, GD, tol)
+    return f
 
 # SWITCH
 switch_atypes = {
@@ -117,7 +124,8 @@ switch_atypes = {
     2: cheby2,
     3: legendre,
     4: cauer,
-    5: bessel
+    5: bessel,
+    6: gauss
 }
 
 

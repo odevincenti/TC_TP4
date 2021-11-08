@@ -4,8 +4,8 @@ from scipy.special import eval_legendre, legendre
 from back.FilterClass import Filter, ApproxType, FilterType
 
 class Legendre(Filter):
-    def __init__(self, filter_type, filter_data, n, Q, rp, GD, nmin, nmax, Qmax):
-        super().__init__(filter_type, ApproxType.LG, filter_data, n, Q, rp, GD, nmin, nmax, Qmax)
+    def __init__(self, filter_type, filter_data, n, Q, nmin, nmax, Qmax, GD):
+        super().__init__(filter_type, ApproxType.LG, filter_data, n, Q, nmin, nmax, Qmax, None, GD, None)
 
     def get_best_n(self, nmin, nmax):
         '''wan = self.get_wan()
