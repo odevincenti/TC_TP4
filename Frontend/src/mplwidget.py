@@ -23,3 +23,22 @@ class MplWidget(QWidget):
         #self.toolbar.setStyleSheet("background-color:Gray;")
         layout.addWidget(NavigationToolbar(self.canvas, self))
         self.canvas.toolbar.setStyleSheet("backgroud-color:Red;")
+
+class MplWidget2(QWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
+
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self.canvas)  #agrego el canvas
+
+        self.canvas.ax = self.canvas.figure.add_subplot(111)
+        self.setLayout(self.layout)
+        #self.canvas.draw()
+
+    def show_toolbar(self, layout):
+        #self.toolbar.setStyleSheet("background-color:Gray;")
+        layout.addWidget(NavigationToolbar(self.canvas, self))
+        self.canvas.toolbar.setStyleSheet("backgroud-color:Red;")

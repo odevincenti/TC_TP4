@@ -63,6 +63,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
 
+
     # FUNCIONESSSS
 
     def filter_change(self, value):

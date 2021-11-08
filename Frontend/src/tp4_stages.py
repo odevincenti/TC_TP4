@@ -18,3 +18,4 @@ class Stages (QWidget, Ui_Form):
         self.label_28.hide()
         self.label_31.hide()
 
+        self.MplWidget2.show_toolbar(self.Toolbar2)
