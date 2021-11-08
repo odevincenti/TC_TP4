@@ -31,6 +31,13 @@ class FilterSpace:
             del f
         return True
 
+    # delFilter: Saca el filtro del FilterSpace y lo destruye
+    # Recibe el filtro (elemento) (Lo puedo cambiar al índice o nombre, lo que resulte más cómodo)
+    def delFilter(self, f):
+        self.filters.remove(f)
+        del f
+        return
+
     # check_filter: Revisa que el filtro sea válido. Devuelve True si lo es, False si no.
     def check_filter(self, filter_type, approx, wp, wa, Ap, Aa):
         m = ""
@@ -78,6 +85,8 @@ class FilterSpace:
             else:
                 wp[0] = (wa[0] * wa[1]) / wp[1]
         return wp, wa
+
+
 
 def butterworth(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
