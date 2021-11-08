@@ -1,5 +1,5 @@
 import numpy as np
-from FilterClass import FilterType, FilterData, ApproxType
+from back.FilterClass import FilterType, FilterData, ApproxType
 from Approx.butterworth import Butterworth
 from Approx.bessel import Bessel
 from Approx.legendre import Legendre
@@ -85,8 +85,6 @@ class FilterSpace:
             else:
                 wp[0] = (wa[0] * wa[1]) / wp[1]
         return wp, wa
-
-
 
 def butterworth(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
