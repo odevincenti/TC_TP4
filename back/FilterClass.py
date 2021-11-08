@@ -148,7 +148,7 @@ class Filter:
             z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]), self.data.wp[1] - self.data.wp[0])
             self.data.n = len(p)
         elif self.type == FilterType.GD:
-            z, p, g = ss.bessel(self.data.n, np.divide(1, self.data.GD), analog=True, output="zpk", norm='delay')
+            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, np.divide(1, self.data.GD))
         else:
             self.filter_error()
             z, p, g = [None, None, None]
@@ -226,7 +226,8 @@ class Filter:
         if self.approx != ApproxType.CH2 and self.data.Q is None:
             w, mod, ph = ss.bode([self.zeros, self.poles, self.data.g], w=np.linspace(wp / 10, wa * 5, num=100000))
             stop_band = [w for w, mod in zip(w, mod) if mod <= (-self.data.Aa)]
-            adjust = (((wa - stop_band[0]) / stop_band[0]) * self.data.des + 1)
+            if len(stop_band) == 0: adjust = 1
+            else: adjust = (((wa - stop_band[0]) / stop_band[0]) * self.data.des + 1)
         else:
             adjust = 1
 
@@ -267,7 +268,7 @@ class Filter:
     def get_GD(self, w=None, z=None, p=None, k=None):
         if w is None:
             wmin, wmax = self.get_wminmax()
-            w = np.logspace(wmin, wmax, num=int(10*wmax/wmin))
+            w = np.linspace(wmin, wmax, num=int(10*wmax/wmin))
         if z is None: z = self.zeros
         if p is None: p = self.poles
         if k is None: k = self.data.g
@@ -276,7 +277,11 @@ class Filter:
         gd = np.divide(- np.diff(ph), np.diff(w))
         gd = np.append(gd, gd[len(gd) - 1])
         if self.data.GD is not None: GD = self.data.GD
-        else: GD = 1/gd[0]
+        elif gd[0] != 0:
+            GD = 1/gd[0]
+        else:
+            gd[0] = 1E-15
+            GD = 1/gd[0]
         gd = gd*GD/gd[0]
 
         return w, gd

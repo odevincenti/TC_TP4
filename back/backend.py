@@ -50,6 +50,8 @@ class FilterSpace:
         elif r and filter_type == FilterType.GD and not (approx != ApproxType.B or approx != ApproxType.G):
             print("Sólo se permiten filtros de retardo de grupo con aproximaciones de Bessel o de Gauss")
             r = False
+        elif r and (approx == ApproxType.B or approx == ApproxType.G) and filter_type != FilterType.GD:
+            print("Las aproximaciones de Bessel o Gauss deben ser de retardo de grupo")
         if Ap > Aa:
             r = False
         return r
@@ -109,12 +111,12 @@ def cauer(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol)
 
 def bessel(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Bessel(filter_type, data, n, Q, nmin, nmax, Qmax, GD, tol)
+    f = Bessel(filter_type, data, n, Q, nmin, nmax, Qmax, GD, tol/100 if tol is not None else None)
     return f
 
 def gauss(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
     data = FilterData(wp, wa, Ap, Aa, des)
-    f = Bessel(filter_type, data, n, Q, nmin, nmax, Qmax, GD, tol)
+    f = Bessel(filter_type, data, n, Q, nmin, nmax, Qmax, GD, tol/100 if tol is not None else None)
     return f
 
 # SWITCH
