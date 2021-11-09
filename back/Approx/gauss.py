@@ -30,7 +30,7 @@ class Gauss(Filter):
                 k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
                 wap = np.linspace(min(1, self.get_wan()), max(1, self.get_wan()), 2)
                 wap, mod, ph = ss.bode([z, p, k], w=wap)
-                if mod[0] >= -self.data.Ap and mod[1] <= -self.data.Aa:
+                if np.around(mod[0]) >= -self.data.Ap and np.around(mod[1]) <= -self.data.Aa:
                     break
                 n = n + 1
         return n
@@ -42,14 +42,14 @@ class Gauss(Filter):
         for k in range(1, n):
             ak = (-1)**k/factorial(k)
             poly = np.poly1d([1, 0])
-            #for i in range(k):
-                #poly = np.polymul(poly, np.poly1d([1, 0]))
+            for i in range(k):
+                poly = np.polymul(poly, np.poly1d([1, 0]))
             den = np.polyadd(den, ak * poly)
-            den = np.polyval(den, [1, 0, 0])
+        den = np.polyval(den, [1, 0, 0])
         z, p, k = ss.tf2zpk(num, den)
         p = [pole for pole in p if pole.real < 0]
-
-        gain = 1'''
+        '''
+        gain = 1
         poly = np.poly1d(1)
         for n in np.arange(1, n + 1):
             base = np.zeros(n + 1)
@@ -63,7 +63,7 @@ class Gauss(Filter):
         z, p, k = ss.tf2zpk(num, den)
         p = [pole for pole in p if pole.real > 0]
 
-        '''poles = []
+        poles = []
         for pole in 1j * den.roots:
             if pole.real < 0:
                 new_pole = complex(pole.real if abs(pole.real) > 1e-10 else 0,
@@ -71,5 +71,6 @@ class Gauss(Filter):
                 gain *= abs(new_pole)
                 poles.append(new_pole)
 
-        return [], poles, gain'''
-        return z, p, k
+        return [], poles, gain
+    '''
+        return z, p, k'''
