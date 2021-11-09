@@ -19,7 +19,7 @@ class FilterSpace:
     # Devuelve True si pudo crearlo, False si no.
     # OJO: LAS FRECUENCIAS SE INGRESAN EN RAD/S (Chaquear esto desde el front)
     def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, n=None, Q=None, nmin=None, nmax=None, Qmax=None, rp=None, GD=None, tol=None):
-        if not self.check_filter(filter_type, approx, wp, wa, Ap, Aa):
+        if self.check_filter(filter_type, approx, wp, wa, Ap, Aa) != "":
             print("No se pudo crear el filtro")
             return False
         wp, wa = self.check_symmetry(filter_type, wp, wa)
@@ -54,8 +54,8 @@ class FilterSpace:
             m = "El orden de las frecuencias de atenuación y paso está mal"
         elif m == "" and filter_type == FilterType.GD and not (approx != ApproxType.B or approx != ApproxType.G):
             m = "Sólo se permiten filtros de retardo de grupo con aproximaciones de Bessel o de Gauss"
-        elif m == "" and (approx == ApproxType.B or approx == ApproxType.G) and filter_type != FilterType.GD:
-            m = "Las aproximaciones de Bessel o Gauss deben ser de retardo de grupo"
+        #elif m == "" and (approx == ApproxType.B or approx == ApproxType.G) and filter_type != FilterType.GD:
+        #    m = "Las aproximaciones de Bessel o Gauss deben ser de retardo de grupo"
         if Ap > Aa:
             m = "Ap no puede ser mayor que Aa"
         return m
