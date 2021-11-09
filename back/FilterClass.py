@@ -32,6 +32,7 @@ class FilterData:
         self.Ap = Ap
         self.Aa = Aa
         self.des = des
+        self.G0 = None
         self.n = None
         self.g = None
         self.eps = None
@@ -88,6 +89,7 @@ class Filter:
         self.Q = Q'''
         self.data = filter_data
         self.approx = approx
+        self.visibility = True
         self.data.eps = self.get_eps(self.data.Ap)
         self.data.rp = rp
         self.data.GD = GD
@@ -262,7 +264,9 @@ class Filter:
         return H'''
 
     def get_eps(self, A):
-        eps = np.sqrt(np.power(10, A/10) - 1)
+        if A is not None:
+            eps = np.sqrt(np.power(10, A/10) - 1)
+        else: eps = None
         return eps
 
     def get_GD(self, w=None, z=None, p=None, k=None):
@@ -277,9 +281,9 @@ class Filter:
         gd = np.divide(- np.diff(ph), np.diff(w))
         gd = np.append(gd, gd[len(gd) - 1])
         if self.data.GD is not None: GD = self.data.GD
-        elif gd[0] != 0 or np.isnan(gd[0]):
+        elif gd[0] != 0 and not np.isnan(gd[0]):
             GD = 1/gd[0]
-        else:
+        if gd[0] == 0 or np.isnan(gd[0]):
             gd[0] = 1E-15
             GD = 1/gd[0]
         gd = gd*GD/gd[0]
@@ -356,6 +360,35 @@ class Filter:
     def filter_error(self):
         print("ERROR: No se pudo crear el filtro")
         self.type = FilterType.ERR
+        return
+
+    def plot_mod(self, ax, w=None):
+        if w is None:
+            wmin, wmax = self.get_wminmax()
+            w = np.logspace(wmin, wmax, int(wmax / wmin * 10))
+        w, mod, ph = ss.bode([self.num, self.den], w)
+        ax.semilogx(w, mod)
+        return
+
+    def plot_ph(self, ax, w=None):
+        if w is None:
+            wmin, wmax = self.get_wminmax()
+            w = np.logspace(wmin, wmax, int(wmax / wmin * 10))
+        w, mod, ph = ss.bode([self.num, self.den], w)
+        ax.semilogx(w, ph)
+        return
+
+    def plot_gd(self, ax, w=None):
+        if w is None:
+            wmin, wmax = self.get_wminmax()
+            w = np.linspace(wmin, wmax, int(wmax / wmin * 10))
+        w, gd = self.get_GD(w)
+        ax.plot(w, gd)
+        return
+
+    def plot_zp(self, ax, color):
+        ax.scatter(self.zeros.real, self.zeros.imag, marker='o', edgecolors=color, facecolors="None")
+        ax.scatter(self.poles.real, self.poles.imag, marker='x', color=color)
         return
 
     def print_self(self):
