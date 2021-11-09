@@ -14,6 +14,7 @@ class Bessel(Filter):
             n = nmin
             for i in range(nmax - nmin):
                 [z, p, k] = ss.bessel(n, 1, analog=True, output="zpk", norm='delay')
+                k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
                 '''w, mod, ph = ss.bode([b, a])
                 group_delay = np.divide(-np.diff(ph), np.diff(w))  # d(ph)/d(w)'''
                 w = np.linspace(wpn/10, wpn*10, num=1000)
@@ -37,6 +38,9 @@ class Bessel(Filter):
 
     def get_fun(self, n):
         #z, p, k = ss.bessel(n, self.data.wp*self.data.GD, 'lowpass', analog=True, output='zpk', norm='delay')
-        z, p, k = ss.bessel(n, 1/self.get_wan(), 'lowpass', analog=True, output='zpk', norm='delay')
+        if self.type == FilterType.GD:
+            z, p, k = ss.bessel(n, 1, 'lowpass', analog=True, output='zpk', norm='delay')
+        else:
+            z, p, k = ss.bessel(n, 1 / self.get_wan(), 'lowpass', analog=True, output='zpk', norm='delay')
         #z, p, k = ss.besselap(n, norm='delay')
         return z, p, k

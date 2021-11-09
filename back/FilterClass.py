@@ -153,7 +153,8 @@ class Filter:
             z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]) / (2 * np.pi), (self.data.wp[1] - self.data.wp[0]) / (2 * np.pi))
             self.data.n = len(p)
         elif self.type == FilterType.GD:
-            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, np.divide(1, self.data.GD))
+            self.get_desfactor(1, 1/self.data.GD)
+            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, 1/self.data.GD)
         else:
             self.filter_error()
             z, p, g = [None, None, None]
