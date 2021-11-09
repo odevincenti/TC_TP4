@@ -106,8 +106,13 @@ class Filter:
             if len(self.poles) == 0:
                 print("No existe aproximación que cumpla con el Q máximo pretendido")
         self.data.n = n
+        self.name = ftypes[self.type].capitalize() + " " + atypes[self.approx] + " order " + self.data.n
         self.data.g = self.data.g * self.fix_gain(self.get_numden())
         self.num, self.den = self.get_numden()
+
+    def add_name_index(self, i):
+        self.name = "C" + i + ": " + self.name
+        return self.name
 
     # get_best_n: Calcula el n óptimo, depende de la aproximación. No toma en cuenta nmin y nmax.
     def get_best_n(self, nmin, nmax):
@@ -362,33 +367,33 @@ class Filter:
         self.type = FilterType.ERR
         return
 
-    def plot_mod(self, ax, w=None):
+    def plot_mod(self, ax, c, w=None):
         if w is None:
             wmin, wmax = self.get_wminmax()
             w = np.logspace(wmin, wmax, int(wmax / wmin * 10))
         w, mod, ph = ss.bode([self.num, self.den], w)
-        ax.semilogx(w, mod)
+        ax.semilogx(w, mod, label=self.name, color=c)
         return
 
-    def plot_ph(self, ax, w=None):
+    def plot_ph(self, ax, c,  w=None):
         if w is None:
             wmin, wmax = self.get_wminmax()
             w = np.logspace(wmin, wmax, int(wmax / wmin * 10))
         w, mod, ph = ss.bode([self.num, self.den], w)
-        ax.semilogx(w, ph)
+        ax.semilogx(w, ph, label=self.name, color=c)
         return
 
-    def plot_gd(self, ax, w=None):
+    def plot_gd(self, ax, c, w=None):
         if w is None:
             wmin, wmax = self.get_wminmax()
             w = np.linspace(wmin, wmax, int(wmax / wmin * 10))
         w, gd = self.get_GD(w)
-        ax.plot(w, gd)
+        ax.plot(w, gd, label=self.name, color=c)
         return
 
-    def plot_zp(self, ax, color):
-        ax.scatter(self.zeros.real, self.zeros.imag, marker='o', edgecolors=color, facecolors="None")
-        ax.scatter(self.poles.real, self.poles.imag, marker='x', color=color)
+    def plot_zp(self, ax, c):
+        ax.scatter(self.zeros.real, self.zeros.imag, marker='o', edgecolors=c, facecolors="None")
+        ax.scatter(self.poles.real, self.poles.imag, marker='x', color=c)
         return
 
     def print_self(self):

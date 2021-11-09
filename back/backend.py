@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from back.FilterClass import FilterType, FilterData, ApproxType
 from back.Approx.butterworth import Butterworth
 from back.Approx.bessel import Bessel
@@ -25,6 +26,7 @@ class FilterSpace:
             return m
         wp, wa = self.check_symmetry(filter_type, wp, wa)
         f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, n, Q, nmin, nmax, Qmax, rp, GD, tol)
+        f.add_name_index(self.get_name_index())
         if f.type != FilterType.ERR:
             self.filters.append(f)
         else:
@@ -39,6 +41,20 @@ class FilterSpace:
         del f
         return
 
+    def get_name_index(self):
+        index = None
+        ixs = []
+        for i in range(len(self.filters)):
+            ixs.append(int(self.filters[i].name[1]))
+        ixs.sort()
+        for i in range(len(ixs)):
+            if ixs[i] != i:
+                index = i
+                break
+        if index is None:
+            index = len(self.filters)
+        return index
+
     def plot_mod(self, ax):
         wmin = []
         wmax = []
@@ -49,11 +65,18 @@ class FilterSpace:
                 wmax.append(w)
         wmin = min(wmin)
         wmax = max(wmax)
-        w = np.logspace(wmin, wmax, wmax/wmin*100)
+        w = 2 * np.pi * np.logspace(wmin, wmax, wmax/wmin*100)
         cmap = plt.get_cmap("tab10")
+        ax.grid()
         for i in range(len(self.filters)):
             if self.filters[i].visibility:
-                self.filters[i].plot_mod(ax, w, color)
+                self.filters[i].plot_mod(ax, w, cmap[i % 10])
+        ax.legend(loc="best")
+        ax.suptitle("Frequency response - Module")
+        ax.set_xlabel("$f$ [Hz]")
+        ax.set_ylabel("$|H(s)|$ [dB]")
+        ax.set_xlim([wmin, wmax])
+        ax.tight_layout()
         return
 
 
