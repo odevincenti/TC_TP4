@@ -1,7 +1,6 @@
 import numpy as np
 from PyQt5.QtWidgets import QWidget
 from Frontend.src.ui.tp4 import Ui_Form
-from Frontend.src.edit_window import EditWindow
 from Frontend.src.tp4_stages import Stages
 from back.backend import FilterSpace, FilterType, ApproxType
 
@@ -24,6 +23,7 @@ class MainWindowQ (QWidget, Ui_Form):
         self.denom_valor = 0
 
         #HIDESSSS
+        self.label_4.hide()
         self.label_19.hide()
         self.label_20.hide()
         self.label_21.hide()
@@ -51,6 +51,8 @@ class MainWindowQ (QWidget, Ui_Form):
 
         self.aproximation_select_2.hide()
 
+        self.Apply_button.hide()
+
 
         #BOXESSSSSSS
         self.filter_select.currentIndexChanged.connect(self.filter_change)
@@ -69,6 +71,7 @@ class MainWindowQ (QWidget, Ui_Form):
         self.remove_curve_button.clicked.connect(self.remove_curve)
 
         self.Edit_button.clicked.connect(self.edit_curve)
+        self.Apply_button.clicked.connect(self.apply_edit)
 
         self.Design_Stages_button.clicked.connect(self.Design_Stages)
 
@@ -221,7 +224,6 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
     def create_curve(self):
-        print("add")
         if self.Qmax == 0:
             self.Qmax_valor = None
             self.Qmax_text = "Auto."
@@ -251,16 +253,39 @@ class MainWindowQ (QWidget, Ui_Form):
                     self.error = 1
 
 
-        elif self.filter_select.currentIndex() == 4:
+
+        if self.filter_select.currentIndex() == 2 or self.filter_select.currentIndex() == 3:
+            self.fa_masmenos = [(self.fa_menos_valor.value()) * 2 * np.pi , (self.fa_mas_valor.value()) * 2 * np.pi]
+            self.fp_masmenos = [(self.fp_menos_valor.value()) * 2 * np.pi, (self.fp_mas_valor.value()) * 2 * np.pi]
             if self.Nmaxmin == 0:
-                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select_2.currentIndex(), (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, self.GD_value.value(), self.tolerance_value.value()) == ""):
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(), self.fp_masmenos, self.fa_masmenos, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, None, None) == ""):
                     self.error = 0
                 else:
                     self.error = 1
             elif self.Nmaxmin == 1:
-                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select_2.currentIndex(),
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(),
+                                      self.fp_masmenos, self.fa_masmenos, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor,
+                                      None, self.N_min_box_2.value(), self.N_max_box.value(), None, self.Qmax_valor, None,
+                                      None, None) == ""):
+                    self.error = 0
+                else:
+                    self.error = 1
+
+
+        elif self.filter_select.currentIndex() == 4:
+            if self.aproximation_select_2.currentIndex() == 0:
+                self.var = 5
+            else:
+                self.var = 6
+            if self.Nmaxmin == 0:
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.var, (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, self.GD_value.value(), self.tolerance_value.value()) == ""):
+                    self.error = 0
+                else:
+                    self.error = 1
+            elif self.Nmaxmin == 1:
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.var,
                                       (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor,
-                                      None, self.N_min_box_2.value(), self.N_max_box, None, self.Qmax_valor, None,
+                                      None, None, self.N_min_box_2.value(), self.N_max_box.value(), self.Qmax_valor, None,
                                       self.GD_value.value(), self.tolerance_value.value()) == ""):
                     self.error = 0
                 else:
@@ -268,34 +293,159 @@ class MainWindowQ (QWidget, Ui_Form):
 
         if self.error == 0:
             self.label_3.hide()
-            if self.Nmaxmin == 0:
-                self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
-                    self.filter_select.currentText()) + "__N:" + str(self.N_min_box_2.value()) + "__Qmax:" + (
-                    self.Qmax_text) + "__Denom:" + (
-                    self.denom_text)).split())
-            elif self.Nmaxmin == 1:
-                self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
-                    self.filter_select.currentText()) + "__Nmin:" + str(self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
-                                                     self.Qmax_text) + "__Denom:" + (
-                                                     self.denom_text)).split())
-            self.cant_curvas = self.cant_curvas + 1
-            self.label_3.hide()
+            if self.filter_select.currentIndex() == 5:
+                if self.Nmaxmin == 0:
+                    self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select_2.currentText()) + "__" + (
+                        self.filter_select.currentText()) + "__N:" + str(self.N_min_box_2.value()) + "__Qmax:" + (
+                        self.Qmax_text) + "__Denom:" + (
+                        self.denom_text)).split())
+                elif self.Nmaxmin == 1:
+                    self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select_2.currentText()) + "__" + (
+                        self.filter_select.currentText()) + "__Nmin:" + str(self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
+                                                         self.Qmax_text) + "__Denom:" + (
+                                                         self.denom_text)).split())
+                self.cant_curvas = self.cant_curvas + 1
+                self.label_3.hide()
+            else:
+                if self.Nmaxmin == 0:
+                    if self.aproximation_select.currentIndex() != 2:
+                        self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
+                            self.filter_select.currentText()) + "__N:" + str(self.N_min_box_2.value()) + "__Qmax:" + (
+                            self.Qmax_text) + "__Denom:" + (
+                            self.denom_text)).split())
+                    else:
+                        self.Curve_List_Select.addItems(
+                            ('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
+                                self.filter_select.currentText()) + "__N:" + str(
+                                self.N_min_box_2.value()) + "__Qmax:" + (
+                                 self.Qmax_text)).split())
+                elif self.Nmaxmin == 1:
+                    if self.aproximation_select.currentIndex() != 2:
+                        self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
+                            self.filter_select.currentText()) + "__Nmin:" + str(self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
+                                                             self.Qmax_text) + "__Denom:" + (
+                                                             self.denom_text)).split())
+                    else:
+                        self.Curve_List_Select.addItems(
+                            ('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
+                                self.filter_select.currentText()) + "__Nmin:" + str(
+                                self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
+                                 self.Qmax_text)).split())
+                self.cant_curvas = self.cant_curvas + 1
+                self.label_3.hide()
         else:
-            print("ERROR")
             self.label_3.show()
             self.error = 0
 
     def remove_curve(self):
-        print("remove")
         if self.cant_curvas > 0:
-            self.fs.delFilter(self.Curve_List_Select.currentIndex())
+            self.fs.delFilter(self.fs.filters[self.Curve_List_Select.currentIndex()])
             self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
             self.cant_curvas = self.cant_curvas - 1
 
     def edit_curve(self):
-        print("edit")
-        if self.cant_curvas > 0:
-            self.edit_wind = EditWindow()
+        '''if self.cant_curvas > 0:
+            print("edit")
+            self.Edit_button.hide()
+            self.Apply_button.show()
+            self.label_4.show()
+            self.label_4.setText(self.Curve_List_Select.currentText())
+            self.Curve_List_Select.hide()
+
+            self.filter_select.setCurrentIndex(self.fs.filters[(self.Curve_List_Select.currentIndex())].type)
+
+            if self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 0 or self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 1:
+                self.label_19.hide()
+                self.label_20.hide()
+                self.label_21.hide()
+                self.label_22.hide()
+                self.label_24.hide()
+                self.label_25.hide()
+                self.fa_mas_valor.hide()
+                self.fa_menos_valor.hide()
+                self.fp_mas_valor.hide()
+                self.fp_menos_valor.hide()
+                self.GD_value.hide()
+                self.tolerance_value.hide()
+                self.aproximation_select_2.hide()
+                self.label_15.show()
+                self.label_16.show()
+                self.Aa_Valor.show()
+                self.Ap_valor.show()
+                self.label_17.show()
+                self.label_18.show()
+                self.fp_valor.show()
+                self.fa_valor.show()
+                self.aproximation_select.show()
+                self.aproximation_select.setCurrentIndex(self.fs.filters[(self.Curve_List_Select.currentIndex())].approx)
+
+                self.Aa_Valor.setValue(self.fs.filters[(self.Curve_List_Select.currentIndex())].data.Aa)
+                self.Ap_valor.show(self.fs.filters[(self.Curve_List_Select.currentIndex())].data.Ap)
+                self.fp_valor.show((self.fs.filters[(self.Curve_List_Select.currentIndex())].data.wp) / (2 * np.pi))
+                self.fa_valor.show((self.fs.filters[(self.Curve_List_Select.currentIndex())].data.wa) / (2 * np.pi))
+
+
+            elif self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 2 or self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 3:
+                self.label_17.hide()
+                self.label_18.hide()
+                self.fa_valor.hide()
+                self.fp_valor.hide()
+                self.label_24.hide()
+                self.label_25.hide()
+                self.GD_value.hide()
+                self.tolerance_value.hide()
+                self.aproximation_select_2.hide()
+                self.label_15.show()
+                self.label_16.show()
+                self.label_19.show()
+                self.label_20.show()
+                self.label_21.show()
+                self.label_22.show()
+                self.Aa_Valor.show()
+                self.Ap_valor.show()
+                self.fa_mas_valor.show()
+                self.fa_menos_valor.show()
+                self.fp_mas_valor.show()
+                self.fp_menos_valor.show()
+                self.aproximation_select.show()
+
+
+            elif self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 4:
+                self.label_15.hide()
+                self.label_16.hide()
+                self.label_17.hide()
+                self.fa_valor.hide()
+                self.label_19.hide()
+                self.label_20.hide()
+                self.label_21.hide()
+                self.label_22.hide()
+                self.Aa_Valor.hide()
+                self.Ap_valor.hide()
+                self.fa_mas_valor.hide()
+                self.fa_menos_valor.hide()
+                self.fp_mas_valor.hide()
+                self.fp_menos_valor.hide()
+                self.aproximation_select.hide()
+                self.label_24.show()
+                self.label_25.show()
+                self.GD_value.show()
+                self.tolerance_value.show()
+                self.aproximation_select_2.show()
+                if self.fs.filters[(self.Curve_List_Select.currentIndex())].approx == 5:
+                    self.aproximation_select_2.setCurrentIndex(0)
+                else:
+                    self.aproximation_select_2.setCurrentIndex(1)
+
+
+                self.GD_value.setValue(self.fs.filters[(self.Curve_List_Select.currentIndex())].data.GD)
+                self.tolerance_value.setValue(self.fs.filters[(self.Curve_List_Select.currentIndex())].data.tol)'''
+
+
+    def apply_edit(self):
+        self.Apply_button.hide()
+        self.label_4.hide()
+        self.Curve_List_Select.show()
+        self.Edit_button.show()
 
     def Design_Stages (self):
         print("second")
