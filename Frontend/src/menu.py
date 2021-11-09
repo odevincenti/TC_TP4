@@ -23,7 +23,6 @@ class MainWindowQ (QWidget, Ui_Form):
         self.denom_valor = 0
 
         #HIDESSSS
-        self.label_4.hide()
         self.label_19.hide()
         self.label_20.hide()
         self.label_21.hide()
@@ -51,8 +50,6 @@ class MainWindowQ (QWidget, Ui_Form):
 
         self.aproximation_select_2.hide()
 
-        self.Apply_button.hide()
-
 
         #BOXESSSSSSS
         self.filter_select.currentIndexChanged.connect(self.filter_change)
@@ -69,9 +66,6 @@ class MainWindowQ (QWidget, Ui_Form):
         #BUTTONSSSS
         self.add_curve_button.clicked.connect(self.create_curve)
         self.remove_curve_button.clicked.connect(self.remove_curve)
-
-        self.Edit_button.clicked.connect(self.edit_curve)
-        self.Apply_button.clicked.connect(self.apply_edit)
 
         self.Design_Stages_button.clicked.connect(self.Design_Stages)
 
@@ -345,110 +339,6 @@ class MainWindowQ (QWidget, Ui_Form):
             self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
             self.cant_curvas = self.cant_curvas - 1
             self.type_graph_change()
-
-    def edit_curve(self):
-        '''if self.cant_curvas > 0:
-            print("edit")
-            self.Edit_button.hide()
-            self.Apply_button.show()
-            self.label_4.show()
-            self.label_4.setText(self.Curve_List_Select.currentText())
-            self.Curve_List_Select.hide()
-
-            self.filter_select.setCurrentIndex(self.fs.filters[(self.Curve_List_Select.currentIndex())].type)
-
-            if self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 0 or self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 1:
-                self.label_19.hide()
-                self.label_20.hide()
-                self.label_21.hide()
-                self.label_22.hide()
-                self.label_24.hide()
-                self.label_25.hide()
-                self.fa_mas_valor.hide()
-                self.fa_menos_valor.hide()
-                self.fp_mas_valor.hide()
-                self.fp_menos_valor.hide()
-                self.GD_value.hide()
-                self.tolerance_value.hide()
-                self.aproximation_select_2.hide()
-                self.label_15.show()
-                self.label_16.show()
-                self.Aa_Valor.show()
-                self.Ap_valor.show()
-                self.label_17.show()
-                self.label_18.show()
-                self.fp_valor.show()
-                self.fa_valor.show()
-                self.aproximation_select.show()
-                self.aproximation_select.setCurrentIndex(self.fs.filters[(self.Curve_List_Select.currentIndex())].approx)
-
-                self.Aa_Valor.setValue(self.fs.filters[(self.Curve_List_Select.currentIndex())].data.Aa)
-                self.Ap_valor.show(self.fs.filters[(self.Curve_List_Select.currentIndex())].data.Ap)
-                self.fp_valor.show((self.fs.filters[(self.Curve_List_Select.currentIndex())].data.wp) / (2 * np.pi))
-                self.fa_valor.show((self.fs.filters[(self.Curve_List_Select.currentIndex())].data.wa) / (2 * np.pi))
-
-
-            elif self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 2 or self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 3:
-                self.label_17.hide()
-                self.label_18.hide()
-                self.fa_valor.hide()
-                self.fp_valor.hide()
-                self.label_24.hide()
-                self.label_25.hide()
-                self.GD_value.hide()
-                self.tolerance_value.hide()
-                self.aproximation_select_2.hide()
-                self.label_15.show()
-                self.label_16.show()
-                self.label_19.show()
-                self.label_20.show()
-                self.label_21.show()
-                self.label_22.show()
-                self.Aa_Valor.show()
-                self.Ap_valor.show()
-                self.fa_mas_valor.show()
-                self.fa_menos_valor.show()
-                self.fp_mas_valor.show()
-                self.fp_menos_valor.show()
-                self.aproximation_select.show()
-
-
-            elif self.fs.filters[(self.Curve_List_Select.currentIndex())].type == 4:
-                self.label_15.hide()
-                self.label_16.hide()
-                self.label_17.hide()
-                self.fa_valor.hide()
-                self.label_19.hide()
-                self.label_20.hide()
-                self.label_21.hide()
-                self.label_22.hide()
-                self.Aa_Valor.hide()
-                self.Ap_valor.hide()
-                self.fa_mas_valor.hide()
-                self.fa_menos_valor.hide()
-                self.fp_mas_valor.hide()
-                self.fp_menos_valor.hide()
-                self.aproximation_select.hide()
-                self.label_24.show()
-                self.label_25.show()
-                self.GD_value.show()
-                self.tolerance_value.show()
-                self.aproximation_select_2.show()
-                if self.fs.filters[(self.Curve_List_Select.currentIndex())].approx == 5:
-                    self.aproximation_select_2.setCurrentIndex(0)
-                else:
-                    self.aproximation_select_2.setCurrentIndex(1)
-
-
-                self.GD_value.setValue(self.fs.filters[(self.Curve_List_Select.currentIndex())].data.GD)
-                self.tolerance_value.setValue(self.fs.filters[(self.Curve_List_Select.currentIndex())].data.tol)'''
-
-
-    def apply_edit(self):
-        self.Apply_button.hide()
-        self.label_4.hide()
-        self.Curve_List_Select.show()
-        self.Edit_button.show()
 
     def Design_Stages (self):
         print("second")
