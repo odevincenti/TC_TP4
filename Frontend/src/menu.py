@@ -2,7 +2,7 @@ import numpy as np
 from PyQt5.QtWidgets import QWidget
 from Frontend.src.ui.tp4 import Ui_Form
 from Frontend.src.tp4_stages import Stages
-from back.backend import FilterSpace, FilterType, ApproxType
+from back.backend import FilterSpace, FilterType, ApproxType, plot_template
 
 class MainWindowQ (QWidget, Ui_Form):
 
@@ -54,6 +54,7 @@ class MainWindowQ (QWidget, Ui_Form):
         #BOXESSSSSSS
         self.filter_select.currentIndexChanged.connect(self.filter_change)
         self.aproximation_select.currentIndexChanged.connect(self.aproximation_change)
+        self.Curve_List_Select.currentIndexChanged.connect(self.curve_change)
         self.type_graph_select.currentIndexChanged.connect(self.type_graph_change)
 
 
@@ -168,11 +169,19 @@ class MainWindowQ (QWidget, Ui_Form):
         if len(self.fs.filters) != 0:
             if self.type_graph_select.currentIndex() == 0:
                 self.fs.plot_mod(self.MplWidget.canvas.ax)
+                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
+                              self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=False)
+
             elif self.type_graph_select.currentIndex() == 1:
                 self.fs.plot_ph(self.MplWidget.canvas.ax)
             elif self.type_graph_select.currentIndex() == 2:
+                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type, self.fs.filters[self.Curve_List_Select.currentIndex()].data, A = True)
+
                 print(2)
             elif self.type_graph_select.currentIndex() == 3:
+                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
+                              self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=True)
+
                 print(3)
             elif self.type_graph_select.currentIndex() == 4:
                 self.fs.plot_gd(self.MplWidget.canvas.ax)
@@ -338,6 +347,11 @@ class MainWindowQ (QWidget, Ui_Form):
             self.fs.delFilter(self.fs.filters[self.Curve_List_Select.currentIndex()])
             self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
             self.cant_curvas = self.cant_curvas - 1
+            self.type_graph_change()
+
+
+    def curve_change (self):
+        if self.type_graph_select.currentIndex() == 2 or self.type_graph_select.currentIndex() == 3:
             self.type_graph_change()
 
     def Design_Stages (self):
