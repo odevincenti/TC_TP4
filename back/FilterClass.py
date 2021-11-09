@@ -393,7 +393,7 @@ class Filter:
 
     def plot_zp(self, ax, c):
         ax.scatter(self.zeros.real, self.zeros.imag, marker='o', edgecolors=c, facecolors="None")
-        ax.scatter(self.poles.real, self.poles.imag, marker='x', color=c)
+        ax.scatter(self.poles.real, self.poles.imag, marker='x', color=c, label=self.name)
         return
 
     def print_self(self):

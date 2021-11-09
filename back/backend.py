@@ -84,6 +84,35 @@ class FilterSpace:
         ax.set_xlim([wmin, wmax])
         return
 
+    def plot_ph(self, ax):
+        wmin, wmax = self.get_wminmax()
+        wmin = wmin / (2 * np.pi)
+        wmax = wmax / (2 * np.pi)
+        w = np.linspace(wmin, wmax, int(100*wmax/wmin))
+        cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        ax.grid()
+        for i in range(len(self.filters)):
+            if self.filters[i].visibility:
+                self.filters[i].plot_ph(ax, cycle[i % len(cycle)], w)
+        ax.legend(loc="best")
+        ax.set_title("Frequency response - Phase")
+        ax.set_xlabel("$f$ [Hz]")
+        ax.set_ylabel("$\\angle{H(s)}$ [dB]")
+        ax.set_xlim([wmin, wmax])
+        return
+
+    def plot_zp(self, ax):
+        cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        ax.grid()
+        for i in range(len(self.filters)):
+            if self.filters[i].visibility:
+                self.filters[i].plot_zp(ax, cycle[i % len(cycle)])
+        ax.legend(loc="best")
+        ax.set_title("Poles and Zeros")
+        ax.set_xlabel("Real")
+        ax.set_ylabel("Imaginary")
+        return
+
     # check_filter: Revisa que el filtro sea válido. Devuelve True si lo es, False si no.
     def check_filter(self, filter_type, approx, wp, wa, Ap, Aa):
         m = ""
