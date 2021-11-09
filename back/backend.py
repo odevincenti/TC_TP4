@@ -50,6 +50,10 @@ class FilterSpace:
         wmin = min(wmin)
         wmax = max(wmax)
         w = np.logspace(wmin, wmax, wmax/wmin*100)
+        color = "r"
+        for i in range(len(self.filters)):
+            if self.filters[i].visibility:
+                self.filters[i].plot_mod(ax, w, color)
         return
 
 
@@ -71,7 +75,7 @@ class FilterSpace:
             m = "Sólo se permiten filtros de retardo de grupo con aproximaciones de Bessel o de Gauss"
         #elif m == "" and (approx == ApproxType.B or approx == ApproxType.G) and filter_type != FilterType.GD:
         #    m = "Las aproximaciones de Bessel o Gauss deben ser de retardo de grupo"
-        if Ap > Aa and filter_type != FilterType.GD:
+        if filter_type != FilterType.GD and Ap > Aa:
             m = "Ap no puede ser mayor que Aa"
         return m
 
