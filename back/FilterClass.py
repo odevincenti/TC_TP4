@@ -106,12 +106,12 @@ class Filter:
             if len(self.poles) == 0:
                 print("No existe aproximación que cumpla con el Q máximo pretendido")
         self.data.n = n
-        self.name = ftypes[self.type].capitalize() + " " + atypes[self.approx] + " order " + self.data.n
+        self.name = ftypes[self.type].capitalize() + " " + atypes[self.approx] + " order " + str(self.data.n)
         self.data.g = self.data.g * self.fix_gain(self.get_numden())
         self.num, self.den = self.get_numden()
 
     def add_name_index(self, i):
-        self.name = "C" + i + ": " + self.name
+        self.name = "C" + str(i) + ": " + self.name
         return self.name
 
     # get_best_n: Calcula el n óptimo, depende de la aproximación. No toma en cuenta nmin y nmax.
@@ -142,17 +142,17 @@ class Filter:
             #return self.zeros, self.poles, self.data.g
         if self.type == FilterType.LP:
             self.get_desfactor(1, self.data.wa/self.data.wp)
-            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, self.data.wp)
+            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, self.data.wp / (2 * np.pi))
         elif self.type == FilterType.HP:
             self.get_desfactor(1, self.data.wp/self.data.wa)
-            z, p, g = ss.lp2hp_zpk(self.zeros, self.poles, self.data.g, self.data.wp)
+            z, p, g = ss.lp2hp_zpk(self.zeros, self.poles, self.data.g, self.data.wp / (2 * np.pi))
         elif self.type == FilterType.BP:
             self.get_desfactor(1, (self.data.wa[1] - self.data.wa[0])/(self.data.wp[1] - self.data.wp[0]))
-            z, p, g = ss.lp2bp_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0]*self.data.wp[1]), self.data.wp[1] - self.data.wp[0])
+            z, p, g = ss.lp2bp_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0]*self.data.wp[1]) / (2 * np.pi), (self.data.wp[1] - self.data.wp[0]) / (2 * np.pi))
             self.data.n = len(p)
         elif self.type == FilterType.BR:
             self.get_desfactor(1, (self.data.wp[1] - self.data.wp[0])/(self.data.wa[1] - self.data.wa[0]))
-            z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]), self.data.wp[1] - self.data.wp[0])
+            z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]) / (2 * np.pi), (self.data.wp[1] - self.data.wp[0]) / (2 * np.pi))
             self.data.n = len(p)
         elif self.type == FilterType.GD:
             z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, np.divide(1, self.data.GD))
@@ -370,7 +370,7 @@ class Filter:
     def plot_mod(self, ax, c, w=None):
         if w is None:
             wmin, wmax = self.get_wminmax()
-            w = np.logspace(wmin, wmax, int(wmax / wmin * 10))
+            w = np.linspace(wmin / (2 * np.pi), wmax / (2 * np.pi), int(wmax / wmin * 10))
         w, mod, ph = ss.bode([self.num, self.den], w)
         ax.semilogx(w, mod, label=self.name, color=c)
         return
@@ -378,7 +378,7 @@ class Filter:
     def plot_ph(self, ax, c,  w=None):
         if w is None:
             wmin, wmax = self.get_wminmax()
-            w = np.logspace(wmin, wmax, int(wmax / wmin * 10))
+            w = np.linspace(wmin, wmax, int(wmax / wmin * 10))
         w, mod, ph = ss.bode([self.num, self.den], w)
         ax.semilogx(w, ph, label=self.name, color=c)
         return

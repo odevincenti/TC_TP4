@@ -55,30 +55,34 @@ class FilterSpace:
             index = len(self.filters)
         return index
 
-    def plot_mod(self, ax):
+    def get_wminmax(self):
         wmin = []
         wmax = []
         for i in range(len(self.filters)):
             if self.filters[i].visibility:
-                w = self.filters[i].get_wminmax
-                wmin.append(w)
-                wmax.append(w)
+                w = self.filters[i].get_wminmax()
+                wmin.append(w[0])
+                wmax.append(w[1])
         wmin = min(wmin)
         wmax = max(wmax)
-        w = 2 * np.pi * np.logspace(wmin, wmax, wmax/wmin*100)
-        cmap = plt.get_cmap("tab10")
+        return wmin, wmax
+
+    def plot_mod(self, ax):
+        wmin, wmax = self.get_wminmax()
+        wmin = wmin / (2 * np.pi)
+        wmax = wmax / (2 * np.pi)
+        w = np.linspace(wmin, wmax, int(100*wmax/wmin))
+        cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
         ax.grid()
         for i in range(len(self.filters)):
             if self.filters[i].visibility:
-                self.filters[i].plot_mod(ax, w, cmap[i % 10])
+                self.filters[i].plot_mod(ax, cycle[i % len(cycle)], w)
         ax.legend(loc="best")
-        ax.suptitle("Frequency response - Module")
+        ax.set_title("Frequency response - Module")
         ax.set_xlabel("$f$ [Hz]")
         ax.set_ylabel("$|H(s)|$ [dB]")
         ax.set_xlim([wmin, wmax])
-        ax.tight_layout()
         return
-
 
     # check_filter: Revisa que el filtro sea válido. Devuelve True si lo es, False si no.
     def check_filter(self, filter_type, approx, wp, wa, Ap, Aa):
