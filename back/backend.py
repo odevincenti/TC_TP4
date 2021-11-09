@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+from copy import copy
 from back.FilterClass import FilterType, FilterData, ApproxType
 from back.Approx.butterworth import Butterworth
 from back.Approx.bessel import Bessel
@@ -224,5 +226,57 @@ switch_atypes = {
     6: gauss
 }
 
+# plot_template: Dibuja la plantilla.
+# Recibe: - ax (axis)
+#         - ftype (Tipo de filtro)
+#         - fdata (FilterData: wp, wa, Aa, Ap, des)
+#         - A: Atenuación (True) o Ganancia (False)
+def plot_template(ax, ftype, fdata, A=True):
+    if not A:
+        Ap = - copy(fdata.Ap)
+        Aa = - copy(fdata.Aa)
+        ax.set_ylim([Aa*4 - Ap, Aa/Ap])
+    else:
+        Ap = copy(fdata.Ap)
+        Aa = copy(fdata.Aa)
+        ax.set_ylim([-Aa/Ap, Aa * 4 - Ap])
 
+    rp = None
+    ra = None
+    r2 = None
+
+    wp = np.array(fdata.wp) / (2 * np.pi)
+    wa = np.array(fdata.wa) / (2 * np.pi)
+
+    if ftype == FilterType.LP:
+        rp = Rectangle((wp/10, Ap), wp - wp/10, Aa*4 - Ap, color="orange", alpha=0.4)
+        ra = Rectangle((wa, 0), wa*10 - wa, Aa, color="orange", alpha=0.4)
+        ax.set_xlim([wp/10, wa * 10 - wa])
+
+    elif ftype == FilterType.HP:
+        ra = Rectangle((wa / 10, 0), wa - wa / 10, Aa, color="orange", alpha=0.4)
+        rp = Rectangle((wp, Ap), wp * 10 - wp, Aa*4 - Ap, color="orange", alpha=0.4)
+        ax.set_xlim([wa/10, wp * 10 - wp])
+
+    elif ftype == FilterType.BP:
+        ra = Rectangle((wa[0] / 10, 0), wa[0] - wa[0] / 10, Aa, color="orange", alpha=0.4)
+        rp = Rectangle((wp[0], Ap), wp[1] - wp[0], Aa * 4 - Ap, color="orange", alpha=0.4)
+        r2 = Rectangle((wa[1], 0), wa[1]*10 - wa[1], Aa, color="orange", alpha=0.4)
+        ax.set_xlim([wa[0]/10, wa[1]*10 - wa[1]])
+
+    elif ftype == FilterType.BR:
+        rp = Rectangle((wp[0]/10, Ap), wp[0] - wp[0]/10, Aa*4 - Ap, color="orange", alpha=0.4)
+        ra = Rectangle((wa[0], 0), wa[1] - wa[0], Aa, color="orange", alpha=0.4)
+        r2 = Rectangle((wp[1], Ap), wp[1] * 10 - wp[1], Aa*4 - Ap, color="orange", alpha=0.4)
+        ax.set_xlim([wp[0]/10, wp[1]*10 - wp[1]])
+
+    elif ftype == FilterType.GD:
+        ax.set_xlim([wp/10, wp * 10])
+
+    if ftype != FilterType.GD:
+        ax.add_patch(rp)
+        ax.add_patch(ra)
+    if r2 is not None: ax.add_patch(r2)
+
+    return
 
