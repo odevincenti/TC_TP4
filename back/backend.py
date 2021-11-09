@@ -19,9 +19,10 @@ class FilterSpace:
     # Devuelve True si pudo crearlo, False si no.
     # OJO: LAS FRECUENCIAS SE INGRESAN EN RAD/S (Chaquear esto desde el front)
     def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, n=None, Q=None, nmin=None, nmax=None, Qmax=None, rp=None, GD=None, tol=None):
-        if self.check_filter(filter_type, approx, wp, wa, Ap, Aa) != "":
+        m = self.check_filter(filter_type, approx, wp, wa, Ap, Aa)
+        if m != "":
             print("No se pudo crear el filtro")
-            return False
+            return m
         wp, wa = self.check_symmetry(filter_type, wp, wa)
         f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, n, Q, nmin, nmax, Qmax, rp, GD, tol)
         if f.type != FilterType.ERR:
@@ -29,7 +30,7 @@ class FilterSpace:
         else:
             print("Error al crear el filtro")
             del f
-        return True
+        return ""
 
     # delFilter: Saca el filtro del FilterSpace y lo destruye
     # Recibe el filtro (elemento) (Lo puedo cambiar al índice o nombre, lo que resulte más cómodo)
