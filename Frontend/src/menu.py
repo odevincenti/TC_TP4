@@ -237,7 +237,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
         if self.filter_select.currentIndex() == 0 or self.filter_select.currentIndex() == 1:
             if self.Nmaxmin == 0:
-                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(), (self.fp_valor.value()) * 2 * np.pi, (self.fa_valor.value()) * 2 * np.pi, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, None, None) == True):
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(), (self.fp_valor.value()) * 2 * np.pi, (self.fa_valor.value()) * 2 * np.pi, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, None, None) == ""):
                     self.error = 0
                 else:
                     self.error = 1
@@ -245,7 +245,7 @@ class MainWindowQ (QWidget, Ui_Form):
                 if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(),
                                       (self.fp_valor.value()) * 2 * np.pi, (self.fa_valor.value()) * 2 * np.pi, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor,
                                       None, self.N_min_box_2.value(), self.N_max_box.value(), None, self.Qmax_valor, None,
-                                      None, None) == True):
+                                      None, None) == ""):
                     self.error = 0
                 else:
                     self.error = 1
@@ -253,7 +253,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
         elif self.filter_select.currentIndex() == 4:
             if self.Nmaxmin == 0:
-                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select_2.currentIndex(), (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, self.GD_value.value(), self.tolerance_value.value()) == True):
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select_2.currentIndex(), (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, self.GD_value.value(), self.tolerance_value.value()) == ""):
                     self.error = 0
                 else:
                     self.error = 1
@@ -261,7 +261,7 @@ class MainWindowQ (QWidget, Ui_Form):
                 if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select_2.currentIndex(),
                                       (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor,
                                       None, self.N_min_box_2.value(), self.N_max_box, None, self.Qmax_valor, None,
-                                      self.GD_value.value(), self.tolerance_value.value()) == True):
+                                      self.GD_value.value(), self.tolerance_value.value()) == ""):
                     self.error = 0
                 else:
                     self.error = 1
@@ -288,7 +288,6 @@ class MainWindowQ (QWidget, Ui_Form):
     def remove_curve(self):
         print("remove")
         if self.cant_curvas > 0:
-            print(self.Curve_List_Select.currentIndex())
             self.fs.delFilter(self.Curve_List_Select.currentIndex())
             self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
             self.cant_curvas = self.cant_curvas - 1
