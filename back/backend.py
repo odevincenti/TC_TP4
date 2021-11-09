@@ -69,7 +69,7 @@ class FilterSpace:
         wmax = max(wmax)
         return wmin, wmax
 
-    def plot_mod(self, ax):
+    def plot_mod(self, ax, A=False):
         wmin, wmax = self.get_wminmax()
         wmin = wmin / (2 * np.pi)
         wmax = wmax / (2 * np.pi)
@@ -78,7 +78,7 @@ class FilterSpace:
         ax.grid()
         for i in range(len(self.filters)):
             if self.filters[i].visibility:
-                self.filters[i].plot_mod(ax, cycle[i % len(cycle)], w)
+                self.filters[i].plot_mod(ax, cycle[i % len(cycle)], w, A)
         ax.legend(loc="best")
         ax.set_title("Frequency response - Module")
         ax.set_xlabel("$f$ [Hz]")

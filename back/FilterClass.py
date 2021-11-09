@@ -378,11 +378,17 @@ class Filter:
         self.type = FilterType.ERR
         return
 
-    def plot_mod(self, ax, c, w=None):
+    # plot_mod: dibuja el módulo de la transferencia de la curva
+    # Recibe: - ax: axis
+    #         - c: color
+    #         - w: arreglo de w
+    #         - A: Atenuación (True) o Ganancia (False)
+    def plot_mod(self, ax, c, w=None, A=False):
         if w is None:
             wmin, wmax = self.get_wminmax()
             w = np.linspace(wmin / (2 * np.pi), wmax / (2 * np.pi), int(wmax / wmin * 10))
         w, mod, ph = ss.bode([self.num, self.den], w)
+        if A: mod = - mod
         ax.semilogx(w, mod, label=self.name, color=c)
         return
 

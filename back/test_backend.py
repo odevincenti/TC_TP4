@@ -18,8 +18,8 @@ fil.print_self()
 # BODE
 fig, ax = plt.subplots(2, 1)
 axmod, axph = ax
-plot_template(axmod, fil.type, fil.data, False)
-FS.plot_mod(axmod)
+plot_template(axmod, fil.type, fil.data, True)
+FS.plot_mod(axmod, A=True)
 FS.plot_ph(axph)
 '''b, a = fil.num, fil.den
 wmin, wmax = fil.get_wminmax()
