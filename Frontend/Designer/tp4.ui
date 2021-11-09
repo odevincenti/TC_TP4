@@ -622,6 +622,9 @@
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
                   </property>
+                  <property name="decimals">
+                   <number>6</number>
+                  </property>
                   <property name="maximum">
                    <double>2000000000.000000000000000</double>
                   </property>
@@ -1043,19 +1046,55 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <widget class="QPushButton" name="Edit_button">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="Edit_button">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background:white;</string>
+             </property>
+             <property name="text">
+              <string>EDIT</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Apply_button">
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background:white;</string>
+             </property>
+             <property name="text">
+              <string>APPLY</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_4">
            <property name="font">
             <font>
              <pointsize>14</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:white;</string>
+            <string notr="true">color:white</string>
            </property>
            <property name="text">
-            <string>EDIT</string>
+            <string>TextLabel</string>
            </property>
           </widget>
          </item>
