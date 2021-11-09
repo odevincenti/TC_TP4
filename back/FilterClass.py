@@ -138,8 +138,6 @@ class Filter:
         return wan
 
     def denormalize(self):
-        #if self.approx == ApproxType.B:
-            #return self.zeros, self.poles, self.data.g
         if self.type == FilterType.LP:
             self.get_desfactor(1, self.data.wa/self.data.wp)
             z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, self.data.wp / (2 * np.pi))
@@ -186,9 +184,21 @@ class Filter:
             k = den[0] / num[0]
             if self.approx == ApproxType.C: k = k * 10**(-self.data.Ap/20)
         elif ftype == FilterType.BP:
+            '''wo = self.data.wp[0] + (self.data.wp[1] - self.data.wp[0]) / 2
+            w = np.linspace(wo, wo * 1.1, 3)
+            w, h = ss.freqs_zpk(self.zeros, self.poles, self.data.g, w)
+            habs = abs(h[0])
+            k = 20*np.log10(habs)
+
+            k = -2 * self.data.Q ** 2
+
+            k = 1 / k'''
+
             z, poles, g = ss.tf2zpk(num, den)
             alpha = [-2*p.real for p in poles if p.imag > 0]
-            k = np.prod(alpha)/(num[0])**(1/len(num))# - np.log10(self.data.eps)
+            k = np.prod(alpha)/(num[0])#**(1/len(num))# - np.log10(self.data.eps)
+            k = 1
+
         else:
             self.filter_error()
             k = None

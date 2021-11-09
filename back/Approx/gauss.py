@@ -20,7 +20,7 @@ class Gauss(Filter):
                 w = np.linspace(wpn/10, wpn*10, num=1000)
                 w, gd = self.get_GD(w, z=z, p=p, k=k)
                 closest = (np.abs(w - wpn)).argmin()
-                if gd[closest] >= (1 - self.data.tol)*self.data.GD and not np.isnan(gd[closest]):
+                if gd[closest] >= (1 - self.data.tol) * self.data.GD and not np.isnan(gd[closest]):
                     break
                 n = n + 1
         else:
@@ -41,14 +41,15 @@ class Gauss(Filter):
         den = np.poly1d([1])
         for k in range(1, n):
             ak = (-1)**k/factorial(k)
-            poly = np.poly1d([1, 0, 0])
-            for i in range(k):
-                poly = np.polymul(poly, np.poly1d([1, 0, 0]))
+            poly = np.poly1d([1, 0])
+            #for i in range(k):
+                #poly = np.polymul(poly, np.poly1d([1, 0]))
             den = np.polyadd(den, ak * poly)
+            den = np.polyval(den, [1, 0, 0])
         z, p, k = ss.tf2zpk(num, den)
-        p = [pole for pole in p if pole.real < 0]'''
+        p = [pole for pole in p if pole.real < 0]
 
-        gain = 1
+        gain = 1'''
         poly = np.poly1d(1)
         for n in np.arange(1, n + 1):
             base = np.zeros(n + 1)
@@ -56,9 +57,13 @@ class Gauss(Filter):
             new_poly = np.poly1d(base)
             poly = np.polyadd(poly, new_poly)
 
+        num = [1]
         den = np.polyval(poly, np.poly1d([1, 0, 0]))
 
-        poles = []
+        z, p, k = ss.tf2zpk(num, den)
+        p = [pole for pole in p if pole.real > 0]
+
+        '''poles = []
         for pole in 1j * den.roots:
             if pole.real < 0:
                 new_pole = complex(pole.real if abs(pole.real) > 1e-10 else 0,
@@ -66,4 +71,5 @@ class Gauss(Filter):
                 gain *= abs(new_pole)
                 poles.append(new_pole)
 
-        return [], poles, gain
+        return [], poles, gain'''
+        return z, p, k

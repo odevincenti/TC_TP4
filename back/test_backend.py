@@ -56,11 +56,13 @@ def plot_template(ax, ftype, fdata, A=True):
     return
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.BW, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-FS.addFilter(FilterType.LP, ApproxType.CH1, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.HP, ApproxType.BW, 4000, 1000, 0.5, 20, 20, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BP, ApproxType.LG, [2, 4], [1, 5], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.LP, ApproxType.B, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 100, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.LP, ApproxType.CH1, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.HP, ApproxType.B, 4000, 1000, 3, 30, 0, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
+#FS.addFilter(FilterType.BP, ApproxType.B, [2 * (2 * np.pi), 4 * (2 * np.pi)], [1 * (2 * np.pi), 5 * (2 * np.pi)], 5, 40, 0, n=3, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BP, ApproxType.LG, [2 * (2 * np.pi), 4 * (2 * np.pi)], [1 * (2 * np.pi), 5 * (2 * np.pi)], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.BR, ApproxType.C, [1, 5], [2, 4], 0.5, 20, 0, rp=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BR, ApproxType.B, [1, 5], [2, 4], 0.5, 20, 100, rp=1, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.GD, ApproxType.B, 10, 1500, 3, 30, 0, tol=20, GD=10E-3, nmin=1, nmax=15, Qmax=150)
 fil = FS.filters[0]
 fil.print_self()

@@ -29,7 +29,7 @@ class Bessel(Filter):
                 k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
                 wap = np.linspace(min(1, self.get_wan()), max(1, self.get_wan()), 2)
                 wap, mod, ph = ss.bode([z, p, k], w=wap)
-                if mod[0] >= -self.data.Ap and mod[1] <= -self.data.Aa:
+                if np.around(mod[0]) >= -self.data.Ap and np.around(mod[1]) <= -self.data.Aa:
                     break
                 n = n + 1
         return n
@@ -37,5 +37,6 @@ class Bessel(Filter):
 
     def get_fun(self, n):
         #z, p, k = ss.bessel(n, self.data.wp*self.data.GD, 'lowpass', analog=True, output='zpk', norm='delay')
-        z, p, k = ss.bessel(n, 1, 'lowpass', analog=True, output='zpk', norm='delay')
+        z, p, k = ss.bessel(n, 1/self.get_wan(), 'lowpass', analog=True, output='zpk', norm='delay')
+        #z, p, k = ss.besselap(n, norm='delay')
         return z, p, k
