@@ -50,7 +50,7 @@ class FilterSpace:
         wmin = min(wmin)
         wmax = max(wmax)
         w = np.logspace(wmin, wmax, wmax/wmin*100)
-        color = "r"
+        cmap = plt.get_cmap("tab10")
         for i in range(len(self.filters)):
             if self.filters[i].visibility:
                 self.filters[i].plot_mod(ax, w, color)
