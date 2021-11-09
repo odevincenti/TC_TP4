@@ -113,6 +113,23 @@ class FilterSpace:
         ax.set_ylabel("Imaginary")
         return
 
+    def plot_gd(self, ax):
+        wmin, wmax = self.get_wminmax()
+        wmin = wmin / (2 * np.pi)
+        wmax = wmax / (2 * np.pi) / 3
+        w = np.linspace(wmin, wmax, int(100 * wmax / wmin))
+        cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        ax.grid()
+        for i in range(len(self.filters)):
+            if self.filters[i].visibility:
+                self.filters[i].plot_gd(ax, cycle[i % len(cycle)], w)
+        ax.legend(loc="best")
+        ax.set_title("Group Delay")
+        ax.set_xlabel("$f$ [Hz]")
+        ax.set_ylabel("$\\frac{d(\\angle{H(s)})}{d (f)}$ [dB]")
+        ax.set_xlim([wmin, wmax])
+        return
+
     # check_filter: Revisa que el filtro sea válido. Devuelve True si lo es, False si no.
     def check_filter(self, filter_type, approx, wp, wa, Ap, Aa):
         m = ""
