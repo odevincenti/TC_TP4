@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QWidget
 from Frontend.src.ui.tp4_stages import Ui_Form
-from Frontend.src.mplwidget import MplWidget
 
 class Stages (QWidget, Ui_Form):
 
