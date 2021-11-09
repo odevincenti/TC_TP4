@@ -169,21 +169,24 @@ class MainWindowQ (QWidget, Ui_Form):
             self.label_14.show()
             self.Denom_check.show()
 
-    def type_graph_change(self, value):
-        if value == 0:
-            print(0)
-        elif value == 1:
-            print(1)
-        elif value == 2:
-            print(2)
-        elif value == 3:
-            print(3)
-        elif value == 4:
-            print(4)
-        elif value == 5:
-            print(5)
-        elif value == 6:
-            print(6)
+    def type_graph_change(self):
+        self.MplWidget.canvas.ax.clear()
+        if len(self.fs.filters) != 0:
+            if self.type_graph_select.currentIndex() == 0:
+                self.fs.plot_mod(self.MplWidget.canvas.ax)
+            elif self.type_graph_select.currentIndex() == 1:
+                self.fs.plot_ph(self.MplWidget.canvas.ax)
+            elif self.type_graph_select.currentIndex() == 2:
+                print(2)
+            elif self.type_graph_select.currentIndex() == 3:
+                print(3)
+            elif self.type_graph_select.currentIndex() == 4:
+                self.fs.plot_gd(self.MplWidget.canvas.ax)
+            elif self.type_graph_select.currentIndex() == 5:
+                print(5)
+            elif self.type_graph_select.currentIndex() == 6:
+                self.fs.plot_zp(self.MplWidget.canvas.ax)
+        self.MplWidget.canvas.draw()
 
 
     def N_check_state (self, value):
@@ -304,8 +307,6 @@ class MainWindowQ (QWidget, Ui_Form):
                         self.filter_select.currentText()) + "__Nmin:" + str(self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
                                                          self.Qmax_text) + "__Denom:" + (
                                                          self.denom_text)).split())
-                self.cant_curvas = self.cant_curvas + 1
-                self.label_3.hide()
             else:
                 if self.Nmaxmin == 0:
                     if self.aproximation_select.currentIndex() != 2:
@@ -331,8 +332,9 @@ class MainWindowQ (QWidget, Ui_Form):
                                 self.filter_select.currentText()) + "__Nmin:" + str(
                                 self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
                                  self.Qmax_text)).split())
-                self.cant_curvas = self.cant_curvas + 1
-                self.label_3.hide()
+            self.cant_curvas = self.cant_curvas + 1
+            self.label_3.hide()
+            self.type_graph_change()
         else:
             self.label_3.show()
             self.error = 0
@@ -342,6 +344,7 @@ class MainWindowQ (QWidget, Ui_Form):
             self.fs.delFilter(self.fs.filters[self.Curve_List_Select.currentIndex()])
             self.Curve_List_Select.removeItem(self.Curve_List_Select.currentIndex())
             self.cant_curvas = self.cant_curvas - 1
+            self.type_graph_change()
 
     def edit_curve(self):
         '''if self.cant_curvas > 0:
@@ -451,9 +454,6 @@ class MainWindowQ (QWidget, Ui_Form):
         print("second")
         if self.cant_curvas > 0:
             self.stages = Stages()
-
-
-
 
 
 
