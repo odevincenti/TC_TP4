@@ -468,14 +468,37 @@ class Filter:
             Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
             s = "Order " + str(n) + " - fo = " + str(np.around(fo, 3)) + " Hz - Q = " + str(np.around(Q, 3))
         elif n == 1:
-            fo = p.real
+            fo = p[0].real
+            s = "Order " + str(n) + " - fo = " + str(np.around(fo, 3)) + " Hz"
+        else:
+            s = "ERROR: Se ingresó una cantidad de polos distinta de 1 o 2"
+        return s
+
+    def get_zero_pairs(self):
+        pairs = self.get_stage_pairs(self.zeros)
+        self.pole_pairs = pairs
+        self.pole_pair_names = []
+
+        for pair in self.pole_pairs:
+            self.pole_pair_names.append(self.get_pole_pair_name(pair))
+
+        return self.pole_pair_names
+
+    def get_zero_pair_name(self, p):
+        n = len(p)
+        if n == 2:
+            fo = (p[0] * p[1]).real
+            Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
+            s = "Order " + str(n) + " - fo = " + str(np.around(fo, 3)) + " Hz - Q = " + str(np.around(Q, 3))
+        elif n == 1:
+            fo = p[0].real
             s = "Order " + str(n) + " - fo = " + str(np.around(fo, 3)) + " Hz"
         else:
             s = "ERROR: Se ingresó una cantidad de polos distinta de 1 o 2"
         return s
 
     def pair_zeros(self, poles):
-        zeros = []
+        zeros = self.get_stage_pairs()
         for j in range(self.zeros):
             minz = np.infty
             for j in range(j, len(self.zeros)):
