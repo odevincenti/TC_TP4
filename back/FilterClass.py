@@ -449,7 +449,10 @@ class Filter:
                 pairs.append([arr[i]])
             if len(pairs) * 2 >= len(arr):
                 break
+        return pairs
 
+    def get_pole_pairs(self):
+        pairs = self.get_stage_pairs(self.poles)
         self.pole_pairs = pairs
         self.pole_pair_names = []
 
@@ -476,8 +479,6 @@ class Filter:
         for j in range(self.zeros):
             minz = np.infty
             for j in range(j, len(self.zeros)):
-                distance = np.sqrt(((self.poles[i].real - self.zeros[j].real) ** 2) + ((self.poles[i].imag - self.zeros[j].imag) ** 2))
-                if distance < minz:
 
                 pass
         return
