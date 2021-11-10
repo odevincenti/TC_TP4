@@ -97,6 +97,8 @@ class Filter:
         self.data.rp = rp
         self.data.GD = GD
         self.data.tol = tol
+        self.pole_pairs = None
+        self.pole_pair_names = None
         if n is not None: self.data.n = n
         else: n = self.get_n(nmin, nmax)
         if Q is not None: self.data.Q = Q
@@ -156,7 +158,7 @@ class Filter:
             z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]) / (2 * np.pi), (self.data.wp[1] - self.data.wp[0]) / (2 * np.pi))
             #self.data.n = len(p)
         elif self.type == FilterType.GD:
-            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, 1/self.data.GD)
+            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, 2 * np.pi/(self.data.GD * self.data.wp))
         else:
             self.filter_error()
             z, p, g = [None, None, None]
@@ -430,7 +432,7 @@ class Filter:
         print("Zeros:", self.zeros)
         print("Poles:", self.poles)
 
-    def get_pairs(self, arr):
+    def get_stage_pairs(self, arr):
         pairs = []
         p = copy(arr)
         for i in range(len(p)):
@@ -447,10 +449,42 @@ class Filter:
                 pairs.append([arr[i]])
             if len(pairs) * 2 >= len(arr):
                 break
-        return pairs
 
-    #def
+        self.pole_pairs = pairs
+        self.pole_pair_names = []
 
+        for pair in self.pole_pairs:
+            self.pole_pair_names.append(self.get_pole_pair_name(pair))
+
+        return self.pole_pair_names
+
+    def get_pole_pair_name(self, p):
+        n = len(p)
+        if n == 2:
+            fo = (p[0] * p[1]).real
+            Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
+            s = "Order " + str(n) + " - fo = " + str(np.around(fo, 3)) + " Hz - Q = " + str(np.around(Q, 3))
+        elif n == 1:
+            fo = p.real
+            s = "Order " + str(n) + " - fo = " + str(np.around(fo, 3)) + " Hz"
+        else:
+            s = "ERROR: Se ingresó una cantidad de polos distinta de 1 o 2"
+        return s
+
+    def pair_zeros(self, poles):
+        zeros = []
+        for j in range(self.zeros):
+            minz = np.infty
+            for j in range(j, len(self.zeros)):
+                distance = np.sqrt(((self.poles[i].real - self.zeros[j].real) ** 2) + ((self.poles[i].imag - self.zeros[j].imag) ** 2))
+                if distance < minz:
+
+                pass
+        return
+
+    def get_stage_tf(self, z, p):
+        num, den = ss.zpk2tf(z, p, 1)
+        return num, den
 
 
 
