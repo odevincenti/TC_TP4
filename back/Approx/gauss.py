@@ -49,7 +49,6 @@ class Gauss(Filter):
         z, p, k = ss.tf2zpk(num, den)
         p = [pole for pole in p if pole.real < 0]
         '''
-        gain = 1
         poly = np.poly1d(1)
         for n in np.arange(1, n + 1):
             base = np.zeros(n + 1)
@@ -60,17 +59,18 @@ class Gauss(Filter):
         num = [1]
         den = np.polyval(poly, np.poly1d([1, 0, 0]))
 
-        z, p, k = ss.tf2zpk(num, den)
-        p = [pole for pole in p if pole.real > 0]
+        # z, p, k = ss.tf2zpk(num, den)
+        # p = [pole for pole in p if pole.real > 0]
 
+        g = 1
         poles = []
         for pole in 1j * den.roots:
             if pole.real < 0:
                 new_pole = complex(pole.real if abs(pole.real) > 1e-10 else 0,
                                    pole.imag if abs(pole.imag) > 1e-10 else 0)
-                gain *= abs(new_pole)
+                g *= abs(new_pole)
                 poles.append(new_pole)
 
-        return [], poles, gain
+        return [], poles, g
     '''
         return z, p, k'''

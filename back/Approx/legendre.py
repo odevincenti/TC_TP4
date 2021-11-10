@@ -21,7 +21,7 @@ class Legendre(Filter):
             k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
             wap = np.linspace(min(1, self.get_wan()), max(1, self.get_wan()), 2)
             wap, mod, ph = ss.bode([z, p, k], w=wap)
-            if mod[0] >= -self.data.Ap and mod[1] <= -self.data.Aa:
+            if mod[0] >= -self.data.Ap * 1.001 and mod[1] <= -self.data.Aa * 0.999:
                 break
             n = n + 1
         return n
@@ -78,9 +78,14 @@ class Legendre(Filter):
         num = np.poly1d([1])
         den = self.data.eps**2 * np.polyval(l_n, np.poly1d([1, 0, 0]))
         den = np.polyadd(den, 1)
-        z, p, k = ss.tf2zpk(num, den)
+        z, p, g = ss.tf2zpk(num, den)
         p = [pole for pole in p if pole.real < 0]
-        return z, p, k
+        num, den = ss.zpk2tf(z, p, g)
+        if num[-1] != 0:
+            k = den[-1] / num[-1]
+        else:
+            k = 1
+        return z, p, k * g
 
 
 
