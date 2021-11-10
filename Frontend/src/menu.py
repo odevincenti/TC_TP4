@@ -310,7 +310,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
         if self.error == 0:
             self.label_3.hide()
-            self.Curve_List_Select.addItems((self.fs.filters[self.cant_curvas].name.replace(' ', '_')).split())
+            self.Curve_List_Select.addItems((self.fs.filters[self.cant_curvas].name).split('\n'))
             self.cant_curvas = self.cant_curvas + 1
             self.label_3.hide()
             self.type_graph_change()

@@ -155,6 +155,7 @@ class Ui_Form(object):
         font.setPointSize(10)
         self.Gain_valor.setFont(font)
         self.Gain_valor.setStyleSheet("background:white;")
+        self.Gain_valor.setMinimum(1.0)
         self.Gain_valor.setMaximum(2000000000.0)
         self.Gain_valor.setObjectName("Gain_valor")
         self.horizontalLayout_15.addWidget(self.Gain_valor)

@@ -315,6 +315,9 @@ color:white;</string>
                   <property name="styleSheet">
                    <string notr="true">background:white;</string>
                   </property>
+                  <property name="minimum">
+                   <double>1.000000000000000</double>
+                  </property>
                   <property name="maximum">
                    <double>2000000000.000000000000000</double>
                   </property>
