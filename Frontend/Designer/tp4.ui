@@ -70,7 +70,8 @@
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:white;</string>
+            <string notr="true">background:rgb(30,30,30);
+color:white;</string>
            </property>
            <item>
             <property name="text">
@@ -95,11 +96,6 @@
            <item>
             <property name="text">
              <string>Group Delay</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Qmáx</string>
             </property>
            </item>
            <item>
@@ -145,7 +141,8 @@
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background:white;</string>
+                <string notr="true">background:rgb(30,30,30);
+color:white;</string>
                </property>
                <item>
                 <property name="text">
@@ -203,7 +200,8 @@
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background:white;</string>
+                <string notr="true">background:rgb(30,30,30);
+color:white;</string>
                </property>
                <item>
                 <property name="text">
@@ -250,7 +248,8 @@
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true">background:white;</string>
+                <string notr="true">background:rgb(30,30,30);
+color:white;</string>
                </property>
                <item>
                 <property name="text">
@@ -737,6 +736,47 @@
              </property>
             </spacer>
            </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <spacer name="horizontalSpacer_8">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_26">
+               <property name="font">
+                <font>
+                 <pointsize>13</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color:white;</string>
+               </property>
+               <property name="text">
+                <string>Template</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="Template_checkbox">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
           </layout>
          </item>
         </layout>
@@ -1069,7 +1109,8 @@
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background:white;</string>
+            <string notr="true">background:rgb(30,30,30);
+color:white;</string>
            </property>
           </widget>
          </item>
