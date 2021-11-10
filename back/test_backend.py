@@ -3,13 +3,13 @@ from back.backend import FilterSpace, FilterType, ApproxType, plot_template
 import matplotlib.pyplot as plt
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.BW, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 100, 10, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
+FS.addFilter(FilterType.LP, ApproxType.BW, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 100, 1, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
 #FS.addFilter(FilterType.LP, ApproxType.BW, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
 #FS.addFilter(FilterType.LP, ApproxType.CH1, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.HP, ApproxType.BW, 4000 * (2 * np.pi), 1000 * (2 * np.pi), 3, 30, 50, 10, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
-#FS.addFilter(FilterType.BP, ApproxType.BW, [2E3 * (2 * np.pi), 3E3 * (2 * np.pi)], [1E3 * (2 * np.pi), 4E3 * (2 * np.pi)], 3, 30, 0, 10, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.HP, ApproxType.BW, 4000 * (2 * np.pi), 1000 * (2 * np.pi), 3, 30, 50, 1, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
+#FS.addFilter(FilterType.BP, ApproxType.B, [2E3 * (2 * np.pi), 3E3 * (2 * np.pi)], [1E3 * (2 * np.pi), 4E3 * (2 * np.pi)], 3, 30, 100, 1, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.BP, ApproxType.LG, [2 * (2 * np.pi), 4 * (2 * np.pi)], [1 * (2 * np.pi), 5 * (2 * np.pi)], 3, 20, 0, nmin=1, nmax=15, Qmax=150)
-#FS.addFilter(FilterType.BR, ApproxType.BW, [1, 5], [2, 4], 0.5, 20, 0, rp=1, nmin=1, nmax=15, Qmax=150)
+#FS.addFilter(FilterType.BR, ApproxType.CH2, [1 * (2 * np.pi), 5 * (2 * np.pi)], [2 * (2 * np.pi), 4 * (2 * np.pi)], 0.5, 20, 0, n=10, rp=1, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.BR, ApproxType.G, [1, 5], [2, 4], 3, 20, 100, rp=1, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.GD, ApproxType.B, 10 * (2 * np.pi), 15 * (2 * np.pi), 3, 30, 0, tol=10, GD=1E-2, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.GD, ApproxType.G, 10 * (2 * np.pi), 15 * (2 * np.pi), 3, 30, 0, tol=10, GD=1E-2, nmin=1, nmax=15, Qmax=150)
@@ -45,8 +45,8 @@ axph.grid()
 #plt.show()'''
 
 # POLOS Y CEROS
-fig2, ax2 = plt.subplots(1, 1)
-FS.plot_zp(ax2)
+# fig2, ax2 = plt.subplots(1, 1)
+# FS.plot_zp(ax2)
 '''fig2.suptitle("Poles and Zeros")
 ax2.scatter(fil.zeros.real, fil.zeros.imag, marker='o', edgecolors="red", facecolors="None")
 ax2.scatter(fil.poles.real, fil.poles.imag, marker='x', color="blue")
@@ -55,8 +55,8 @@ ax2.set_ylabel('Imaginary')
 ax2.grid()'''
 
 # RETARDO DE GRUPO
-figGD, axGD = plt.subplots(1, 1)
-FS.plot_gd(axGD)
+# figGD, axGD = plt.subplots(1, 1)
+# FS.plot_gd(axGD)
 '''wmin, wmax = fil.get_wminmax()
 #wmin = min(fil.data.wp, fil.data.wa)/10 if fil.type <= FilterType.HP elif fil.type <= FilterType.GD else min(fil.data.wp[0], fil.data.wa[0])/10
 #wmax = max(fil.data.wp, fil.data.wa)*10 if fil.type <= FilterType.HP else max(fil.data.wp[1], fil.data.wa[1])*10

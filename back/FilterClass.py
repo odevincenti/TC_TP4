@@ -1,7 +1,8 @@
 import numpy as np
 import scipy.signal as ss
+import matplotlib.pyplot as plt
 from enum import IntEnum
-from copy import copy
+from stage_handler import *
 
 # TIPOS DE FILTROS
 class FilterType(IntEnum):
@@ -104,6 +105,7 @@ class Filter:
         self.pole_pair_names = None
         self.zero_pairs = None
         self.zero_pair_names = None
+        self.stages = []
         if n is not None: self.data.n = n
         else: n = self.get_n(nmin, nmax)
         if Q is not None: self.data.Q = Q
@@ -117,7 +119,7 @@ class Filter:
                 print("No existe aproximación que cumpla con el Q máximo pretendido")
         self.data.n = n
         self.name = ftypes[self.type].capitalize() + " " + atypes[self.approx] + " order " + str(self.data.n)
-        self.data.g = self.data.g * self.fix_gain(self.get_numden()) * self.data.G
+        #self.data.g = self.data.g * self.fix_gain(self.get_numden()) * self.data.G
         self.num, self.den = self.get_numden()
 
     def add_name_index(self, i):
@@ -260,7 +262,7 @@ class Filter:
 
         self.zeros = self.zeros * adjust
         self.poles = self.poles * adjust
-        self.data.g = self.data.g * adjust
+        self.data.g = self.data.g * (adjust ** (len(self.poles)-len(self.zeros)))
 
         return adjust
 
@@ -438,55 +440,23 @@ class Filter:
         print("Zeros:", self.zeros)
         print("Poles:", self.poles)
 
-    def get_stage_pairs(self, arr):
-        pairs = []
-        p = copy(arr)
-        for i in range(len(p)):
-            solo = True
-            for j in range(i + 1, len(p)):
-                if p[i].real - p[j].real < 1E-10 and p[i].imag + p[j].imag < 1E-10:
-                    pairs.append([p[i], p[j]])
-                    p = np.delete(p, j)
-                    solo = False
-                    break
-                else:
-                    solo = True
-            if solo:
-                pairs.append([arr[i]])
-            if len(pairs) * 2 >= len(arr):
-                break
-        return pairs
-
     def get_pole_pairs(self):
-        pairs = self.get_stage_pairs(self.poles)
+        pairs = get_stage_pairs(self.poles)
         self.pole_pairs = pairs
         self.pole_pair_names = []
 
         for pair in self.pole_pairs:
-            self.pole_pair_names.append(self.get_pair_name(pair))
+            self.pole_pair_names.append(get_pair_name(pair))
 
         return self.pole_pair_names
 
-    def get_pair_name(self, p):
-        n = len(p)
-        if n == 2:
-            fo = (p[0] * p[1]).real/(2 * np.pi)**2
-            Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
-            s = "Order " + str(n) + " - fo = " + format_unit(fo, 3) + " Hz - Q = {:.{p}e}".format(Q, p=3)
-        elif n == 1:
-            fo = np.abs(p[0].real / (2 * np.pi))
-            s = "Order " + str(n) + " - fo = " + format_unit(fo, 3) + " Hz"
-        else:
-            s = "ERROR: Se ingresó una cantidad de polos o ceros distinta de 1 o 2"
-        return s
-
     def get_zero_pairs(self):
-        pairs = self.get_stage_pairs(self.zeros)
+        pairs = get_stage_pairs(self.zeros)
         self.zero_pairs = pairs
         self.zero_pair_names = []
 
         for pair in self.zero_pairs:
-            zero_name = self.get_pair_name(pair)
+            zero_name = get_pair_name(pair)
             Qind = zero_name.find("Q")
             if Qind != - 1:
                 zero_name = zero_name[:(Qind - 3)]
@@ -494,38 +464,25 @@ class Filter:
 
         return self.zero_pair_names
 
-    def get_stage_tf(self, z, p):
-        num, den = ss.zpk2tf(z, p, 1)
-        return num, den
+    def add_stage(self, zeros, poles, gain=1):
+        s = get_stage_tf(zeros, poles, gain)
+        self.stages.append(s)
 
+    def plot_combined_stages(self, ax, ixs):
+        nums = []
+        dens = []
+        for i in ixs:
+            nums.append(self.stages[i].num)
+            dens.append(self.stages[i].den)
+        combined_tf = combine_tf(nums, dens)
 
-# format_unit: Obtiene la unidad correcta y escala el número para que sea más fácil de leer
-# Recibe a x como número y la devuelve como string
-def format_unit(x, d=2):
-    y = np.abs(x)
-    if y < 1E-12:
-        m = ""
-    elif y < 1E-9:
-        m = "p"         # Pico
-        x = x / 1E-12
-    elif y < 1E-6:
-        m = "n"         # Nano
-        x = x / 1E-9
-    elif y < 1E-3:
-        m = "u"         # Micro
-        x = x / 1E-6
-    elif y < 1:
-        m = "m"         # Mili
-        x = x / 1E-3
-    elif y < 1E3:
-        m = ""          # Normal
-    elif y < 1E6:
-        m = "k"         # Kilo
-        x = x / 1E3
-    elif y < 1E9:
-        m = "M"         # Mega
-        x = x / 1E6
-    else:
-        m = "G"         # Giga
-        x = x / 1E9
-    return "{:.{p}f}".format(x, p=d) + m
+        ax.grid()
+        w, mod, k = ss.bode(combined_tf)
+        ax.semilogx(w, mod, color="blue")
+
+        ax.set_title("Combined stages")
+        ax.set_xlabel("$f$ [Hz]")
+        ax.set_ylabel("$|H(s)|$ [dB]")
+
+        return
+
