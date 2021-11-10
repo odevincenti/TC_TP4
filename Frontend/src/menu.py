@@ -148,8 +148,10 @@ class MainWindowQ (QWidget, Ui_Form):
             self.fp_mas_valor.hide()
             self.fp_menos_valor.hide()
             self.aproximation_select.hide()
+            self.label_18.show()
             self.label_24.show()
             self.label_25.show()
+            self.fp_valor.show()
             self.GD_value.show()
             self.tolerance_value.show()
             self.aproximation_select_2.show()
@@ -169,30 +171,21 @@ class MainWindowQ (QWidget, Ui_Form):
         self.MplWidget.canvas.ax.clear()
         if len(self.fs.filters) != 0:
             if self.type_graph_select.currentIndex() == 0:
-                print("Module")
                 self.fs.plot_mod(self.MplWidget.canvas.ax, A=False)
 
             elif self.type_graph_select.currentIndex() == 1:
-                print("Phase")
                 self.fs.plot_ph(self.MplWidget.canvas.ax)
 
-
             elif self.type_graph_select.currentIndex() == 2:
-                print("Atenuation")
                 self.fs.plot_mod(self.MplWidget.canvas.ax, A=True)
-
 
             elif self.type_graph_select.currentIndex() == 3:
                 print("N.Atenuation")
 
-
             elif self.type_graph_select.currentIndex() == 4:
-                print("Group Delay")
                 self.fs.plot_gd(self.MplWidget.canvas.ax)
 
-
             elif self.type_graph_select.currentIndex() == 5:
-                print("Zeros & Poles")
                 self.fs.plot_zp(self.MplWidget.canvas.ax)
         self.MplWidget.canvas.draw()
 
@@ -270,7 +263,7 @@ class MainWindowQ (QWidget, Ui_Form):
             elif self.Nmaxmin == 1:
                 if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(),
                                       (self.fp_valor.value()) * 2 * np.pi, (self.fa_valor.value()) * 2 * np.pi, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor,
-                                      None, self.N_min_box_2.value(), self.N_max_box.value(), None, self.Qmax_valor, None,
+                                      None, None, self.N_min_box_2.value(), self.N_max_box.value(), self.Qmax_valor, None,
                                       None, None) == ""):
                     self.error = 0
                 else:
@@ -289,7 +282,7 @@ class MainWindowQ (QWidget, Ui_Form):
             elif self.Nmaxmin == 1:
                 if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(),
                                       self.fp_masmenos, self.fa_masmenos, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor,
-                                      None, self.N_min_box_2.value(), self.N_max_box.value(), None, self.Qmax_valor, None,
+                                      None, None, self.N_min_box_2.value(), self.N_max_box.value(), self.Qmax_valor, None,
                                       None, None) == ""):
                     self.error = 0
                 else:
@@ -317,42 +310,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
         if self.error == 0:
             self.label_3.hide()
-            if self.filter_select.currentIndex() == 5:
-                if self.Nmaxmin == 0:
-                    self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select_2.currentText()) + "__" + (
-                        self.filter_select.currentText()) + "__N:" + str(self.N_min_box_2.value()) + "__Qmax:" + (
-                        self.Qmax_text) + "__Denom:" + (
-                        self.denom_text)).split())
-                elif self.Nmaxmin == 1:
-                    self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select_2.currentText()) + "__" + (
-                        self.filter_select.currentText()) + "__Nmin:" + str(self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
-                                                         self.Qmax_text) + "__Denom:" + (
-                                                         self.denom_text)).split())
-            else:
-                if self.Nmaxmin == 0:
-                    if self.aproximation_select.currentIndex() != 2:
-                        self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
-                            self.filter_select.currentText()) + "__N:" + str(self.N_min_box_2.value()) + "__Qmax:" + (
-                            self.Qmax_text) + "__Denom:" + (
-                            self.denom_text)).split())
-                    else:
-                        self.Curve_List_Select.addItems(
-                            ('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
-                                self.filter_select.currentText()) + "__N:" + str(
-                                self.N_min_box_2.value()) + "__Qmax:" + (
-                                 self.Qmax_text)).split())
-                elif self.Nmaxmin == 1:
-                    if self.aproximation_select.currentIndex() != 2:
-                        self.Curve_List_Select.addItems(('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
-                            self.filter_select.currentText()) + "__Nmin:" + str(self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
-                                                             self.Qmax_text) + "__Denom:" + (
-                                                             self.denom_text)).split())
-                    else:
-                        self.Curve_List_Select.addItems(
-                            ('Curve' + ":" + (self.aproximation_select.currentText()) + "__" + (
-                                self.filter_select.currentText()) + "__Nmin:" + str(
-                                self.N_min_box_2.value()) + "__Nmax:" + str(self.N_max_box.value()) + "__Qmax:" + (
-                                 self.Qmax_text)).split())
+            self.Curve_List_Select.addItems((self.fs.filters[self.cant_curvas].name.replace(' ', '_')).split())
             self.cant_curvas = self.cant_curvas + 1
             self.label_3.hide()
             self.type_graph_change()
@@ -373,8 +331,8 @@ class MainWindowQ (QWidget, Ui_Form):
 
     def Design_Stages (self):
         print("second")
-        if self.cant_curvas > 0:
-            self.stages = Stages()
+        #if self.cant_curvas > 0:
+            #self.stages = Stages(self.fs.filters[self.Curve_List_Select.currentIndex()])
 
 
 
