@@ -62,6 +62,7 @@ class MainWindowQ (QWidget, Ui_Form):
         self.N_check.stateChanged.connect(self.N_check_state)
         self.Q_check.stateChanged.connect(self.Q_check_state)
         self.Denom_check.stateChanged.connect(self.Denom_check_state)
+        self.Template_checkbox.stateChanged.connect(self.Template_check_state)
 
 
         #BUTTONSSSS
@@ -168,26 +169,30 @@ class MainWindowQ (QWidget, Ui_Form):
         self.MplWidget.canvas.ax.clear()
         if len(self.fs.filters) != 0:
             if self.type_graph_select.currentIndex() == 0:
-                self.fs.plot_mod(self.MplWidget.canvas.ax)
-                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
-                              self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=False)
+                print("Module")
+                self.fs.plot_mod(self.MplWidget.canvas.ax, A=False)
 
             elif self.type_graph_select.currentIndex() == 1:
+                print("Phase")
                 self.fs.plot_ph(self.MplWidget.canvas.ax)
+
+
             elif self.type_graph_select.currentIndex() == 2:
-                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type, self.fs.filters[self.Curve_List_Select.currentIndex()].data, A = True)
+                print("Atenuation")
+                self.fs.plot_mod(self.MplWidget.canvas.ax, A=True)
 
-                print(2)
+
             elif self.type_graph_select.currentIndex() == 3:
-                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
-                              self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=True)
+                print("N.Atenuation")
 
-                print(3)
+
             elif self.type_graph_select.currentIndex() == 4:
+                print("Group Delay")
                 self.fs.plot_gd(self.MplWidget.canvas.ax)
+
+
             elif self.type_graph_select.currentIndex() == 5:
-                print(5)
-            elif self.type_graph_select.currentIndex() == 6:
+                print("Zeros & Poles")
                 self.fs.plot_zp(self.MplWidget.canvas.ax)
         self.MplWidget.canvas.draw()
 
@@ -227,6 +232,18 @@ class MainWindowQ (QWidget, Ui_Form):
             self.Denom_slider.show()
             self.Denom_box.show()
             self.denom = 1
+
+    def Template_check_state(self, value):
+        if value == 0:
+            self.type_graph_change()
+        else:
+            if self.type_graph_select.currentIndex() == 0:
+                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
+                              self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=False)
+            elif self.type_graph_select.currentIndex() == 2 or self.type_graph_select.currentIndex() == 3:
+                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
+                              self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=True)
+            self.MplWidget.canvas.draw()
 
 
     def create_curve(self):
@@ -351,8 +368,7 @@ class MainWindowQ (QWidget, Ui_Form):
 
 
     def curve_change (self):
-        if self.type_graph_select.currentIndex() == 2 or self.type_graph_select.currentIndex() == 3:
-            self.type_graph_change()
+        self.type_graph_change()
 
     def Design_Stages (self):
         print("second")
