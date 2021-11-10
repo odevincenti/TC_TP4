@@ -331,8 +331,8 @@ class MainWindowQ (QWidget, Ui_Form):
 
     def Design_Stages (self):
         print("second")
-        #if self.cant_curvas > 0:
-            #self.stages = Stages(self.fs.filters[self.Curve_List_Select.currentIndex()])
+        if self.cant_curvas > 0:
+            self.stages = Stages(self.fs.filters[self.Curve_List_Select.currentIndex()])
 
 
 
