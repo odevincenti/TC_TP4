@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.signal as ss
 from enum import IntEnum
+from copy import copy
 
 # TIPOS DE FILTROS
 class FilterType(IntEnum):
@@ -32,6 +33,7 @@ class FilterData:
         self.Ap = Ap
         self.Aa = Aa
         self.des = des
+        self.wan = None
         self.G0 = None
         self.n = None
         self.g = None
@@ -91,6 +93,7 @@ class Filter:
         self.approx = approx
         self.visibility = True
         self.data.eps = self.get_eps(self.data.Ap)
+        self.data.wan = self.get_wan()
         self.data.rp = rp
         self.data.GD = GD
         self.data.tol = tol
@@ -147,13 +150,12 @@ class Filter:
         elif self.type == FilterType.BP:
             self.get_desfactor(1, (self.data.wa[1] - self.data.wa[0])/(self.data.wp[1] - self.data.wp[0]))
             z, p, g = ss.lp2bp_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0]*self.data.wp[1]) / (2 * np.pi), (self.data.wp[1] - self.data.wp[0]) / (2 * np.pi))
-            self.data.n = len(p)
+            #self.data.n = len(p)
         elif self.type == FilterType.BR:
             self.get_desfactor(1, (self.data.wp[1] - self.data.wp[0])/(self.data.wa[1] - self.data.wa[0]))
             z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]) / (2 * np.pi), (self.data.wp[1] - self.data.wp[0]) / (2 * np.pi))
-            self.data.n = len(p)
+            #self.data.n = len(p)
         elif self.type == FilterType.GD:
-            self.get_desfactor(1, 1/self.data.GD)
             z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, 1/self.data.GD)
         else:
             self.filter_error()
@@ -383,12 +385,14 @@ class Filter:
     #         - c: color
     #         - w: arreglo de w
     #         - A: Atenuación (True) o Ganancia (False)
-    def plot_mod(self, ax, c, w=None, A=False):
+    def plot_mod(self, ax, c, w=None, A=False, N=True):
         if w is None:
             wmin, wmax = self.get_wminmax()
             w = np.linspace(wmin / (2 * np.pi), wmax / (2 * np.pi), int(wmax / wmin * 10))
         w, mod, ph = ss.bode([self.num, self.den], w)
         if A: mod = - mod
+        #if N and self.type <= FilterType.HP: w = w / (min(self.data.wa, self.data.wp) / (2 * np.pi))
+        #elif N and self.type <= FilterType.BR: w = w / self.data.wan
         ax.semilogx(w, mod, label=self.name, color=c)
         return
 
@@ -425,3 +429,28 @@ class Filter:
         #if self.H is not None: print(self.H)
         print("Zeros:", self.zeros)
         print("Poles:", self.poles)
+
+    def get_pairs(self, arr):
+        pairs = []
+        p = copy(arr)
+        for i in range(len(p)):
+            solo = True
+            for j in range(i + 1, len(p)):
+                if p[i].real - p[j].real < 1E-10 and p[i].imag + p[j].imag < 1E-10:
+                    pairs.append([p[i], p[j]])
+                    p = np.delete(p, j)
+                    solo = False
+                    break
+                else:
+                    solo = True
+            if solo:
+                pairs.append([arr[i]])
+            if len(pairs) * 2 >= len(arr):
+                break
+        return pairs
+
+    #def
+
+
+
+
