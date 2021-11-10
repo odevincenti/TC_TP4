@@ -466,12 +466,12 @@ class Filter:
     def get_pair_name(self, p):
         n = len(p)
         if n == 2:
-            fo = (p[0] * p[1]).real
+            fo = (p[0] * p[1]).real/(2 * np.pi)**2
             Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
-            s = "Order " + str(n) + " - fo = " + str(np.around(fo, 3)) + " Hz - Q = " + str(np.around(Q, 3))
+            s = "Order " + str(n) + " - fo = " + format_unit(fo, 3) + " Hz - Q = {:.{p}e}".format(Q, p=3)
         elif n == 1:
-            fo = p[0].real
-            s = "Order " + str(n) + " - fo = " + str(np.around(fo, 3)) + " Hz"
+            fo = np.abs(p[0].real / (2 * np.pi))
+            s = "Order " + str(n) + " - fo = " + format_unit(fo, 3) + " Hz"
         else:
             s = "ERROR: Se ingresó una cantidad de polos o ceros distinta de 1 o 2"
         return s
@@ -491,12 +491,7 @@ class Filter:
         return self.zero_pair_names
 
     def pair_zeros(self, poles):
-        zeros = self.get_stage_pairs()
-        for j in range(self.zeros):
-            minz = np.infty
-            for j in range(j, len(self.zeros)):
 
-                pass
         return
 
     def get_stage_tf(self, z, p):
@@ -504,4 +499,33 @@ class Filter:
         return num, den
 
 
-
+# format_unit: Obtiene la unidad correcta y escala el número para que sea más fácil de leer
+# Recibe a x como número y la devuelve como string
+def format_unit(x, d=2):
+    y = np.abs(x)
+    if y < 1E-12:
+        m = ""
+    elif y < 1E-9:
+        m = "p"         # Pico
+        x = x / 1E-12
+    elif y < 1E-6:
+        m = "n"         # Nano
+        x = x / 1E-9
+    elif y < 1E-3:
+        m = "u"         # Micro
+        x = x / 1E-6
+    elif y < 1:
+        m = "m"         # Mili
+        x = x / 1E-3
+    elif y < 1E3:
+        m = ""          # Normal
+    elif y < 1E6:
+        m = "k"         # Kilo
+        x = x / 1E3
+    elif y < 1E9:
+        m = "M"         # Mega
+        x = x / 1E6
+    else:
+        m = "G"         # Giga
+        x = x / 1E9
+    return "{:.{p}f}".format(x, p=d) + m
