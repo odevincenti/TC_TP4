@@ -234,16 +234,17 @@ class MainWindowQ (QWidget, Ui_Form):
             self.denom = 1
 
     def Template_check_state(self, value):
-        if value == 0:
-            self.type_graph_change()
-        else:
-            if self.type_graph_select.currentIndex() == 0:
-                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
-                              self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=False)
-            elif self.type_graph_select.currentIndex() == 2 or self.type_graph_select.currentIndex() == 3:
-                plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
-                              self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=True)
-            self.MplWidget.canvas.draw()
+        if len(self.fs.filters) != 0:
+            if value == 0:
+                self.type_graph_change()
+            else:
+                if self.type_graph_select.currentIndex() == 0:
+                    plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
+                                  self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=False)
+                elif self.type_graph_select.currentIndex() == 2 or self.type_graph_select.currentIndex() == 3:
+                    plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
+                                  self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=True)
+                self.MplWidget.canvas.draw()
 
 
     def create_curve(self):
