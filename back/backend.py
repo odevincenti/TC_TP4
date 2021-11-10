@@ -21,13 +21,13 @@ class FilterSpace:
     # addFilter: Recibe parámetros para el filtro y si tienen sentido, lo crea.
     # Devuelve True si pudo crearlo, False si no.
     # OJO: LAS FRECUENCIAS SE INGRESAN EN RAD/S (Chaquear esto desde el front)
-    def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, n=None, Q=None, nmin=None, nmax=None, Qmax=None, rp=None, GD=None, tol=None):
+    def addFilter(self, filter_type, approx, wp, wa, Ap, Aa, des, G=1, n=None, Q=None, nmin=None, nmax=None, Qmax=None, rp=None, GD=None, tol=None):
         m = self.check_filter(filter_type, approx, wp, wa, Ap, Aa)
         if m != "":
             print("No se pudo crear el filtro")
             return m
         wp, wa = self.check_symmetry(filter_type, wp, wa)
-        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, n, Q, nmin, nmax, Qmax, rp, GD, tol)
+        f = switch_atypes.get(approx)(filter_type, wp, wa, Ap, Aa, des/100, G, n, Q, nmin, nmax, Qmax, rp, GD, tol)
         f.add_name_index(self.get_name_index())
         if f.type != FilterType.ERR:
             self.filters.append(f)
@@ -80,9 +80,11 @@ class FilterSpace:
             if self.filters[i].visibility:
                 self.filters[i].plot_mod(ax, cycle[i % len(cycle)], w, A)
         ax.legend(loc="best")
-        ax.set_title("Frequency response - Module")
+        if not A: ax.set_title("Frequency response - Module")
+        else: ax.set_title("Attenuation")
         ax.set_xlabel("$f$ [Hz]")
-        ax.set_ylabel("$|H(s)|$ [dB]")
+        if not A: ax.set_ylabel("$|H(s)|$ [dB]")
+        else: ax.set_ylabel("A [dB]")
         ax.set_xlim([wmin, wmax])
         return
 
@@ -106,13 +108,14 @@ class FilterSpace:
     def plot_zp(self, ax):
         cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
         ax.grid()
+        ax.scatter(0, 0, marker='.', edgecolors="None", facecolors="None")
         for i in range(len(self.filters)):
             if self.filters[i].visibility:
                 self.filters[i].plot_zp(ax, cycle[i % len(cycle)])
         ax.legend(loc="best")
         ax.set_title("Poles and Zeros")
-        ax.set_xlabel("Real")
-        ax.set_ylabel("Imaginary")
+        ax.set_xlabel("$\\alpha$ $[\\frac{rad}{s}]$")
+        ax.set_ylabel("$j \omega$ $[\\frac{rad}{s}]$")
         return
 
     def plot_gd(self, ax):
@@ -180,38 +183,38 @@ class FilterSpace:
                 wp[0] = (wa[0] * wa[1]) / wp[1]
         return wp, wa
 
-def butterworth(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
-    data = FilterData(wp, wa, Ap, Aa, des)
+def butterworth(filter_type, wp, wa, Ap, Aa, des, G, n, Q, nmin, nmax, Qmax, rp, GD, tol):
+    data = FilterData(wp, wa, Ap, Aa, des, G)
     f = Butterworth(filter_type, data, n, Q, nmin, nmax, Qmax, GD)
     return f
 
-def cheby1(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
-    data = FilterData(wp, wa, Ap, Aa, des)
+def cheby1(filter_type, wp, wa, Ap, Aa, des, G, n, Q, nmin, nmax, Qmax, rp, GD, tol):
+    data = FilterData(wp, wa, Ap, Aa, des, G)
     f = ChebyI(filter_type, data, n, Q, nmin, nmax, Qmax, rp, GD)
     return f
 
-def cheby2(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
-    data = FilterData(wp, wa, Ap, Aa, des)
+def cheby2(filter_type, wp, wa, Ap, Aa, des, G, n, Q, nmin, nmax, Qmax, rp, GD, tol):
+    data = FilterData(wp, wa, Ap, Aa, des, G)
     f = ChebyII(filter_type, data, n, Q, nmin, nmax, Qmax, GD)
     return f
 
-def legendre(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
-    data = FilterData(wp, wa, Ap, Aa, des)
+def legendre(filter_type, wp, wa, Ap, Aa, des, G, n, Q, nmin, nmax, Qmax, rp, GD, tol):
+    data = FilterData(wp, wa, Ap, Aa, des, G)
     f = Legendre(filter_type, data, n, Q, nmin, nmax, Qmax, GD)
     return f
 
-def cauer(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
-    data = FilterData(wp, wa, Ap, Aa, des)
+def cauer(filter_type, wp, wa, Ap, Aa, des, G, n, Q, nmin, nmax, Qmax, rp, GD, tol):
+    data = FilterData(wp, wa, Ap, Aa, des, G)
     f = Cauer(filter_type, data, n, Q, nmin, nmax, Qmax, GD)
     return f
 
-def bessel(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
-    data = FilterData(wp, wa, Ap, Aa, des)
+def bessel(filter_type, wp, wa, Ap, Aa, des, G, n, Q, nmin, nmax, Qmax, rp, GD, tol):
+    data = FilterData(wp, wa, Ap, Aa, des, G)
     f = Bessel(filter_type, data, n, Q, nmin, nmax, Qmax, GD, tol/100 if tol is not None else None)
     return f
 
-def gauss(filter_type, wp, wa, Ap, Aa, des, n, Q, nmin, nmax, Qmax, rp, GD, tol):
-    data = FilterData(wp, wa, Ap, Aa, des)
+def gauss(filter_type, wp, wa, Ap, Aa, des, G, n, Q, nmin, nmax, Qmax, rp, GD, tol):
+    data = FilterData(wp, wa, Ap, Aa, des, G)
     f = Gauss(filter_type, data, n, Q, nmin, nmax, Qmax, GD, tol/100 if tol is not None else None)
     return f
 
@@ -231,15 +234,17 @@ switch_atypes = {
 #         - ftype (Tipo de filtro)
 #         - fdata (FilterData: wp, wa, Aa, Ap, des)
 #         - A: Atenuación (True) o Ganancia (False)
-def plot_template(ax, ftype, fdata, A=True):
+def plot_template(ax, ftype, fdata, A=True, N=False):
     if not A:
         Ap = - copy(fdata.Ap)
         Aa = - copy(fdata.Aa)
-        ax.set_ylim([Aa*4 - Ap, Aa/Ap])
+        G = fdata.G
+        #ax.set_ylim([Aa*4 - Ap, Aa/Ap])
     else:
         Ap = copy(fdata.Ap)
         Aa = copy(fdata.Aa)
-        ax.set_ylim([-Aa/Ap, Aa * 4 - Ap])
+        G = 1
+        #ax.set_ylim([-Aa/Ap, Aa * 4 - Ap])
 
     rp = None
     ra = None
@@ -249,25 +254,31 @@ def plot_template(ax, ftype, fdata, A=True):
     wa = np.array(fdata.wa) / (2 * np.pi)
 
     if ftype == FilterType.LP:
-        rp = Rectangle((wp/10, Ap), wp - wp/10, Aa*4 - Ap, color="orange", alpha=0.4)
-        ra = Rectangle((wa, 0), wa*10 - wa, Aa, color="orange", alpha=0.4)
+        if N:
+            wp = np.array(1)
+            wa = np.array(fdata.wan)
+        rp = Rectangle((wp/10, Ap + 20 * np.log10(G)), wp - wp/10, Aa*4, color="orange", alpha=0.4)
+        ra = Rectangle((wa, 20 * np.log10(G)), wa*10 - wa, Aa, color="orange", alpha=0.4)
         ax.set_xlim([wp/10, wa * 10 - wa])
 
     elif ftype == FilterType.HP:
-        ra = Rectangle((wa / 10, 0), wa - wa / 10, Aa, color="orange", alpha=0.4)
-        rp = Rectangle((wp, Ap), wp * 10 - wp, Aa*4 - Ap, color="orange", alpha=0.4)
+        if N:
+            wp = np.array(fdata.wan)
+            wa = np.array(1)
+        ra = Rectangle((wa / 10, 20 * np.log10(G)), wa - wa / 10, Aa, color="orange", alpha=0.4)
+        rp = Rectangle((wp, Ap + 20 * np.log10(G)), wp * 10 - wp, Aa*4 - Ap, color="orange", alpha=0.4)
         ax.set_xlim([wa/10, wp * 10 - wp])
 
     elif ftype == FilterType.BP:
-        ra = Rectangle((wa[0] / 10, 0), wa[0] - wa[0] / 10, Aa, color="orange", alpha=0.4)
-        rp = Rectangle((wp[0], Ap), wp[1] - wp[0], Aa * 4 - Ap, color="orange", alpha=0.4)
-        r2 = Rectangle((wa[1], 0), wa[1]*10 - wa[1], Aa, color="orange", alpha=0.4)
+        ra = Rectangle((wa[0] / 10, 20 * np.log10(G)), wa[0] - wa[0] / 10, Aa, color="orange", alpha=0.4)
+        rp = Rectangle((wp[0], Ap + 20 * np.log10(G)), wp[1] - wp[0], Aa * 4 - Ap, color="orange", alpha=0.4)
+        r2 = Rectangle((wa[1], 20 * np.log10(G)), wa[1]*10 - wa[1], Aa, color="orange", alpha=0.4)
         ax.set_xlim([wa[0]/10, wa[1]*10 - wa[1]])
 
     elif ftype == FilterType.BR:
-        rp = Rectangle((wp[0]/10, Ap), wp[0] - wp[0]/10, Aa*4 - Ap, color="orange", alpha=0.4)
-        ra = Rectangle((wa[0], 0), wa[1] - wa[0], Aa, color="orange", alpha=0.4)
-        r2 = Rectangle((wp[1], Ap), wp[1] * 10 - wp[1], Aa*4 - Ap, color="orange", alpha=0.4)
+        rp = Rectangle((wp[0]/10, Ap + 20 * np.log10(G)), wp[0] - wp[0]/10, Aa*4 - Ap, color="orange", alpha=0.4)
+        ra = Rectangle((wa[0], 20 * np.log10(G)), wa[1] - wa[0], Aa, color="orange", alpha=0.4)
+        r2 = Rectangle((wp[1], Ap + 20 * np.log10(G)), wp[1] * 10 - wp[1], Aa*4 - Ap, color="orange", alpha=0.4)
         ax.set_xlim([wp[0]/10, wp[1]*10 - wp[1]])
 
     elif ftype == FilterType.GD:

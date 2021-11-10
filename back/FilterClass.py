@@ -27,14 +27,14 @@ atypes = ["Butterworth", "Cheby I", "Cheby II", "Legendre", "Cauer", "Bessel", "
 
 # DATOS PARA EL FILTRO
 class FilterData:
-    def __init__(self, wp, wa, Ap, Aa, des):
+    def __init__(self, wp, wa, Ap, Aa, des, G):
         self.wp = wp
         self.wa = wa
         self.Ap = Ap
         self.Aa = Aa
         self.des = des
+        self.G = G
         self.wan = None
-        self.G0 = None
         self.n = None
         self.g = None
         self.eps = None
@@ -48,6 +48,7 @@ class FilterData:
         print("Ap =", self.Ap)
         print("Aa =", self.Aa)
         print("des =", self.des)
+        print("G =", self.G)
         print("n =", self.n)
         print("eps =", self.eps)
         print("g =", self.g)
@@ -74,6 +75,7 @@ class FilterData:
 # - Ap: Máxima atenuación en la banda pasante
 # - Aa: Mínima atenuación en la banda atenuante
 # - des: Rango de desnormalización
+# - G: Ganancia en banda pasante
 # - nmin: Grado mínimo
 # - nmax: Grado máximo
 # - Qmax: Máxima selectividad
@@ -87,6 +89,7 @@ class Filter:
         self.Ap = Ap
         self.Aa = Aa
         self.des = des
+        self.G = G
         self.n = n
         self.Q = Q'''
         self.data = filter_data
@@ -114,7 +117,7 @@ class Filter:
                 print("No existe aproximación que cumpla con el Q máximo pretendido")
         self.data.n = n
         self.name = ftypes[self.type].capitalize() + " " + atypes[self.approx] + " order " + str(self.data.n)
-        self.data.g = self.data.g * self.fix_gain(self.get_numden())
+        self.data.g = self.data.g * self.fix_gain(self.get_numden()) * self.data.G
         self.num, self.den = self.get_numden()
 
     def add_name_index(self, i):
@@ -394,7 +397,8 @@ class Filter:
             wmin, wmax = self.get_wminmax()
             w = np.linspace(wmin / (2 * np.pi), wmax / (2 * np.pi), int(wmax / wmin * 10))
         w, mod, ph = ss.bode([self.num, self.den], w)
-        if A: mod = - mod
+        if A:
+            mod = - mod + 20*np.log10(self.data.G)
         #if N and self.type <= FilterType.HP: w = w / (min(self.data.wa, self.data.wp) / (2 * np.pi))
         #elif N and self.type <= FilterType.BR: w = w / self.data.wan
         ax.semilogx(w, mod, label=self.name, color=c)
@@ -489,10 +493,6 @@ class Filter:
             self.zero_pair_names.append(zero_name)
 
         return self.zero_pair_names
-
-    def pair_zeros(self, poles):
-
-        return
 
     def get_stage_tf(self, z, p):
         num, den = ss.zpk2tf(z, p, 1)
