@@ -499,6 +499,11 @@ class Filter:
         self.stage_names = names
         return
 
+    def get_stage_n(self, ix):
+        stage = self.stages[ix]
+        n = len(stage[1]) - 1
+        return n
+
     def plot_combined_stages(self, ax, ixs):
         nums = []
         dens = []

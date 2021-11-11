@@ -3,7 +3,7 @@ from back.backend import FilterSpace, FilterType, ApproxType, plot_template
 import matplotlib.pyplot as plt
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.CH2, 1000 * (2 * np.pi), 5000 * (2 * np.pi), 0.5, 30, 100, 1, n=9, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
+FS.addFilter(FilterType.LP, ApproxType.B, 1000 * (2 * np.pi), 5000 * (2 * np.pi), 0.5, 30, 100, 1, n=9, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
 #FS.addFilter(FilterType.LP, ApproxType.C, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
 #FS.addFilter(FilterType.LP, ApproxType.CH1, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.HP, ApproxType.BW, 4000 * (2 * np.pi), 1000 * (2 * np.pi), 3, 30, 0, 1, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
@@ -32,7 +32,7 @@ for i in range(len(FS.filters[0].stages)):
     elif len(num) == 1:
         ns = str(num[0])
     print(" \t \t  " + ns)
-    print(FS.filters[0].stage_names[i] + ": " + "--------------------------------------")
+    print(FS.filters[0].stage_names[i] + ": " + "--------------------------------" + " Order: " + str(FS.filters[0].get_stage_n(i)))
     ds = ""
     den = FS.filters[0].stages[i][1]
     if len(den) == 3:
