@@ -1,6 +1,7 @@
 from copy import copy
 import numpy as np
 import scipy.signal as ss
+from scipy.spatial import KDTree
 
 def get_stage_pairs(arr):
     pairs = []
@@ -8,7 +9,9 @@ def get_stage_pairs(arr):
     for i in range(len(p)):
         solo = True
         for j in range(i + 1, len(p)):
-            if p[i].real - p[j].real < 1E-10 and p[i].imag + p[j].imag < 1E-10:
+            if abs(p[i].real - p[j].real) < 1E-10 and abs(p[i].imag + p[j].imag) < 1E-10:
+                print(p[i])
+                print(p[j])
                 pairs.append([p[i], p[j]])
                 p = np.delete(p, j)
                 solo = False
@@ -34,7 +37,6 @@ def get_pair_name(p):
         s = "ERROR: Se ingresó una cantidad de polos o ceros distinta de 1 o 2"
     return s
 
-
 def get_stage_tf(z, p, g):
     num, den = ss.zpk2tf(z, p, g)
     return num, den
@@ -55,8 +57,37 @@ def plot_stage(ax, tf, c, n, w=None):
         w, mod, k = ss.bode(tf)
     else:
         w, mod, k = ss.bode(tf, w)
-    ax.semilogx(w, mod, color="blue", label=n)
+    ax.semilogx(w, mod, color=c, label=n)
     return
+
+def auto_stage(poles, zeross, BR=False):
+    zeros = copy(zeross)
+    pplus = keep_nonegatives(poles)
+    z = keep_nonegatives(zeros)
+    p = copy(pplus)
+    pairs = [[[], pole] for pole in poles]
+    for i in range(len(p)):
+        if len(z) == 0:
+            break
+        p.sort(key=np.real, reverse=True)
+        if not BR: ix = np.argmin(np.abs(p[0] - z))
+        else: ix = np.argmax(np.abs(p[0] - z))
+        pix = pplus.index(p[i])
+        zis = zeros[ix]
+        pairs[pix][0] = zis
+        # pairs[poles.index(p[i])] = zeros[z.index(ix)]
+        z.pop(ix)
+        zeros.pop(ix)
+    return pairs
+
+def keep_nonegatives(arr):
+    p = []
+    for a in arr:
+        if a[0].imag >= 0:
+            p.append(a[0])
+        else:
+            p.append(a[1])
+    return p
 
 # format_unit: Obtiene la unidad correcta y escala el número para que sea más fácil de leer
 # Recibe a x como número y la devuelve como string

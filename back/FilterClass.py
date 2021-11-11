@@ -101,11 +101,11 @@ class Filter:
         self.data.rp = rp
         self.data.GD = GD
         self.data.tol = tol
-        self.pole_pairs = None
-        self.pole_pair_names = None
-        self.zero_pairs = None
-        self.zero_pair_names = None
-        self.stage_names = None
+        self.pole_pairs = []
+        self.pole_pair_names = []
+        self.zero_pairs = []
+        self.zero_pair_names = []
+        self.stage_names = []
         self.stages = []
         if n is not None: self.data.n = n
         else: n = self.get_n(nmin, nmax)
@@ -160,16 +160,17 @@ class Filter:
         elif self.type == FilterType.BP:
             self.get_desfactor(1, (self.data.wa[1] - self.data.wa[0])/(self.data.wp[1] - self.data.wp[0]))
             z, p, g = ss.lp2bp_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0]*self.data.wp[1]) / (2 * np.pi), (self.data.wp[1] - self.data.wp[0]) / (2 * np.pi))
-            #self.data.n = len(p)
         elif self.type == FilterType.BR:
             self.get_desfactor(1, (self.data.wp[1] - self.data.wp[0])/(self.data.wa[1] - self.data.wa[0]))
             z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]) / (2 * np.pi), (self.data.wp[1] - self.data.wp[0]) / (2 * np.pi))
-            #self.data.n = len(p)
         elif self.type == FilterType.GD:
             z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, 2 * np.pi/(self.data.GD * self.data.wp))
         else:
             self.filter_error()
             z, p, g = [None, None, None]
+
+        z = np.around(z, 5)
+        p = np.around(p, 5)
 
         return z, p, g
 
@@ -442,7 +443,7 @@ class Filter:
         print("Poles:", self.poles)
 
     def get_pole_pairs(self):
-        pairs = get_stage_pairs(self.poles)
+        pairs = get_stage_pairs(np.around(self.poles, 5))
         self.pole_pairs = pairs
         self.pole_pair_names = []
 
@@ -452,7 +453,7 @@ class Filter:
         return self.pole_pair_names
 
     def get_zero_pairs(self):
-        pairs = get_stage_pairs(self.zeros)
+        pairs = get_stage_pairs(np.around(self.zeros, 5))
         self.zero_pairs = pairs
         self.zero_pair_names = []
 
@@ -484,6 +485,17 @@ class Filter:
             if zero not in self.zeros:
                 m = "El cero ingresado no forma parte del filtro"
         return m
+
+    def get_stages(self):
+        n = False
+        if self.type == FilterType.BR:
+            n = True
+        self.stages = auto_stage(self.pole_pairs, self.zero_pairs, BR=n)
+        names = []
+        for i in range(len(self.stages)):
+            names.append("Stage " + str(i))
+        self.stage_names = names
+        return
 
     def plot_combined_stages(self, ax, ixs):
         nums = []
