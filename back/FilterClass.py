@@ -504,6 +504,17 @@ class Filter:
         n = len(stage[1]) - 1
         return n
 
+    def get_stage_Q(self, ix):
+        stage = self.stages[ix]
+        z, p, k = ss.tf2zpk(stage[0], stage[1])
+        if self.get_stage_n(ix) == 1:
+            Q = abs(abs(p) / (2 * p.real))
+        else:
+            try:
+                Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
+            except RuntimeWarning: pass
+        return Q
+
     def plot_combined_stages(self, ax, ixs):
         nums = []
         dens = []

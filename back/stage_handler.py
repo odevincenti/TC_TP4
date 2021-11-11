@@ -26,7 +26,9 @@ def get_pair_name(p):
     n = len(p)
     if n == 2:
         fo = (p[0] * p[1]).real/(2 * np.pi)**2
-        Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
+        try:
+            Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
+        except RuntimeWarning: pass
         s = "Order " + str(n) + " - fo = " + format_unit(fo, 3) + " Hz - Q = {:.{p}e}".format(Q, p=3)
     elif n == 1:
         fo = np.abs(p[0].real / (2 * np.pi))

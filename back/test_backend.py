@@ -16,11 +16,9 @@ FS.addFilter(FilterType.LP, ApproxType.B, 1000 * (2 * np.pi), 5000 * (2 * np.pi)
 fil = FS.filters[0]
 #fil.print_self()
 
-print(FS.filters[0].get_pole_pairs())
-print(FS.filters[0].get_zero_pairs())
-#FS.filters[0].add_stage(FS.filters[0].zeros, FS.filters[0].poles)
-print(FS.filters[0].get_stages())
-print(FS.filters[0].stages)
+print("Pole pairs: ", FS.filters[0].get_pole_pairs())
+print("Zero pairs: ", FS.filters[0].get_zero_pairs())
+FS.filters[0].add_stage(FS.filters[0].zeros, FS.filters[0].poles)
 
 for i in range(len(FS.filters[0].stages)):
     ns = ""
@@ -32,7 +30,7 @@ for i in range(len(FS.filters[0].stages)):
     elif len(num) == 1:
         ns = str(num[0])
     print(" \t \t  " + ns)
-    print(FS.filters[0].stage_names[i] + ": " + "--------------------------------" + " Order: " + str(FS.filters[0].get_stage_n(i)))
+    print(FS.filters[0].stage_names[i] + ": " + "--------------------------------" + " Order: " + str(FS.filters[0].get_stage_n(i)) + " Q: " + str(FS.filters[0].get_stage_Q(i)))
     ds = ""
     den = FS.filters[0].stages[i][1]
     if len(den) == 3:
