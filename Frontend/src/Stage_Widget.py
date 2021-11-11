@@ -8,5 +8,4 @@ class StageWidget (QWidget, Ui_Form):
         super().__init__(*args, **kwargs)
 
         self.setupUi(self)
-        self.label.show()
 

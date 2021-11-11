@@ -20,7 +20,7 @@ class Stages (QWidget, Ui_Form):
         self.Q_valor.hide()
         self.fo_valor.hide()
         self.label_28.hide()
-        self.widget_Stages_2.hide()
+        self.widget_Stages.hide()
 
         self.MplWidget2.show_toolbar(self.Toolbar2)
         self.plot_zp()
@@ -55,7 +55,32 @@ class Stages (QWidget, Ui_Form):
 
     def create_stage (self):
         self.aux_stage = StageWidget()
-        self.aux_stage.label.setText("Stage " + str(len(self.stage_array) + 1))
+        self.aux_stage.label_2.setText("Stage " + str(len(self.stage_array) + 1))
+        print(self.Zeros_box.currentIndex())
+        print(self.Poles_Box.currentIndex())
+        self.filter_selected.add_stage(self.filter_selected.zero_pairs[self.Zeros_box.currentIndex()], self.filter_selected.pole_pairs[self.Poles_Box.currentIndex()])
+        self.numerador = ""
+        self.denominador = ""
+        print(len(self.filter_selected.stages[-1][0]))
+
+        if (len(self.filter_selected.stages[-1][0])) == 1:
+            self.numerador = str(self.filter_selected.stages[-1][0][0])
+        elif (len(self.filter_selected.stages[-1][0])) == 2:
+            self.numerador = str(self.filter_selected.stages[-1][0][0]) + ".s + " + str(self.filter_selected.stages[-1][0][1])
+        else:
+            self.numerador = str(self.filter_selected.stages[-1][0][0]) + ".s^2 + " + str(self.filter_selected.stages[-1][0][1]) + ".s + " + str(self.filter_selected.stages[-1][0][2])
+
+        if (len(self.filter_selected.stages[-1][1])) == 1:
+            self.denominador = str(self.filter_selected.stages[-1][1][0])
+        elif (len(self.filter_selected.stages[-1][1])) == 2:
+            self.denominador = str(self.filter_selected.stages[-1][1][0]) + ".s + " + str(self.filter_selected.stages[-1][1][1])
+        else:
+            self.denominador = str(self.filter_selected.stages[-1][1][0]) + ".s^2 + " + str(self.filter_selected.stages[-1][1][1]) + ".s + " + str(self.filter_selected.stages[-1][1][2])
+
+        self.aux_stage.label_numerador.setText(self.numerador)
+        self.aux_stage.label_denominador.setText(self.denominador)
+        self.aux_stage.label_n.setText("n")
+        self.aux_stage.label_q.setText("q")
         self.stage_array.append(self.aux_stage)
         self.Stages_Widget_2.layout().addWidget(self.aux_stage)
 
@@ -69,7 +94,7 @@ class Stages (QWidget, Ui_Form):
                 i = i - 1
             i = i + 1
         while j != len(self.stage_array):
-            self.stage_array[j].label.setText("Stage " + str(j + 1))
+            self.stage_array[j].label_2.setText("Stage " + str(j + 1))
             j = j + 1
 
     def selected (self):
