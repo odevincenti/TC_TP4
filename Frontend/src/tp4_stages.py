@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget
 from Frontend.src.ui.tp4_stages import Ui_Form
 from Frontend.src.Stage_Widget import StageWidget
+from copy import copy
 
 class Stages (QWidget, Ui_Form):
 
@@ -21,10 +22,14 @@ class Stages (QWidget, Ui_Form):
         self.fo_valor.hide()
         self.label_28.hide()
         self.widget_Stages.hide()
+        self.label_29.hide()
+        self.label_30.hide()
+        self.k_valor.hide()
 
         self.MplWidget2.show_toolbar(self.Toolbar2)
         self.plot_zp()
         self.set_ZP()
+
 
 
         #RADIO BUTTONSSS
@@ -37,6 +42,7 @@ class Stages (QWidget, Ui_Form):
         #BUTTONSSS
         self.Create_button.clicked.connect(self.create_stage)
         self.delete_stage_button.clicked.connect(self.delete_stage)
+        self.autobutton.clicked.connect(self.automatic)
 
 
     def plot_zp(self):
@@ -51,15 +57,26 @@ class Stages (QWidget, Ui_Form):
     def set_ZP(self):
         self.Poles_Box.addItems(self.filter_selected.get_pole_pairs())
         self.Zeros_box.addItems(self.filter_selected.get_zero_pairs())
-
+        self.poles_ram = copy(self.filter_selected.get_pole_pairs())
+        self.poles_rom = self.filter_selected.get_pole_pairs()
+        self.zeros_ram = copy(self.filter_selected.get_zero_pairs())
+        self.zeros_rom = self.filter_selected.get_zero_pairs()
 
     def create_stage (self):
         self.aux_stage = StageWidget()
         self.aux_stage.label_2.setText("Stage " + str(len(self.stage_array) + 1))
         if self.Zeros_box.currentIndex() == -1:
-            self.filter_selected.add_stage([], self.filter_selected.pole_pairs[self.Poles_Box.currentIndex()])
+            self.filter_selected.add_stage([], self.filter_selected.pole_pairs[self.poles_rom.index(self.poles_ram[self.Poles_Box.currentIndex()])])
+            self.poles_ram.pop(self.Poles_Box.currentIndex())
+            self.Poles_Box.removeItem(self.Poles_Box.currentIndex())
         else:
-            self.filter_selected.add_stage(self.filter_selected.zero_pairs[self.Zeros_box.currentIndex()], self.filter_selected.pole_pairs[self.Poles_Box.currentIndex()])
+            self.filter_selected.add_stage(self.filter_selected.zero_pairs[self.zeros_rom.index(self.zeros_ram[self.Zeros_box.currentIndex()])], self.filter_selected.pole_pairs[self.poles_rom.index(self.poles_ram[self.Poles_Box.currentIndex()])])
+            self.zeros_ram.pop(self.Zeros_box.currentIndex())
+            self.poles_ram.pop(self.Poles_Box.currentIndex())
+            self.Zeros_box.removeItem(self.Zeros_box.currentIndex())
+            self.Poles_Box.removeItem(self.Poles_Box.currentIndex())
+
+
         self.numerador = ""
         self.denominador = ""
 
@@ -123,10 +140,46 @@ class Stages (QWidget, Ui_Form):
         self.MplWidget2.canvas.draw()
 
     def total (self):
-        print("total")
+        self.selec = []
+        u = 0
+        while u != len(self.stage_array):
+            self.selec.append(u)
+            u = u + 1
 
-        self.show_graph()
+        self.MplWidget2.canvas.ax.clear()
+        self.filter_selected.plot_combined_stages(self.MplWidget2.canvas.ax, self.selec)
+        self.MplWidget2.canvas.draw()
 
+    def automatic(self):
+        self.filter_selected.get_stages()
 
-    def show_graph(self):
-        print("show graph")
+        for i in range(len(self.filter_selected.stages)):
+            self.aux_stage = StageWidget()
+            self.aux_stage.label_2.setText("Stage " + str(i + 1))
+            self.numerador = ""
+            self.denominador = ""
+
+            if (len(self.filter_selected.stages[i][0])) == 1:
+                self.numerador = str(self.filter_selected.stages[i][0][0])
+            elif (len(self.filter_selected.stages[i][0])) == 2:
+                self.numerador = str(self.filter_selected.stages[i][0][0]) + ".s + " + str(
+                    self.filter_selected.stages[i][0][1])
+            else:
+                self.numerador = str(self.filter_selected.stages[i][0][0]) + ".s^2 + " + str(
+                    self.filter_selected.stages[i][0][1]) + ".s + " + str(self.filter_selected.stages[i][0][2])
+
+            if (len(self.filter_selected.stages[i][1])) == 1:
+                self.denominador = str(self.filter_selected.stages[i][1][0])
+            elif (len(self.filter_selected.stages[i][1])) == 2:
+                self.denominador = str(self.filter_selected.stages[i][1][0]) + ".s + " + str(
+                    self.filter_selected.stages[i][1][1])
+            else:
+                self.denominador = str(self.filter_selected.stages[i][1][0]) + ".s^2 + " + str(
+                    self.filter_selected.stages[i][1][1]) + ".s + " + str(self.filter_selected.stages[i][1][2])
+
+            self.aux_stage.label_numerador.setText(self.numerador)
+            self.aux_stage.label_denominador.setText(self.denominador)
+            self.aux_stage.label_n.setText(str(self.filter_selected.get_stage_n(i)))
+            self.aux_stage.label_q.setText(str(self.filter_selected.get_stage_Q(i)))
+            self.stage_array.append(self.aux_stage)
+            self.Stages_Widget_2.layout().addWidget(self.aux_stage)
