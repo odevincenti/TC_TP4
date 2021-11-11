@@ -56,12 +56,12 @@ class Stages (QWidget, Ui_Form):
     def create_stage (self):
         self.aux_stage = StageWidget()
         self.aux_stage.label_2.setText("Stage " + str(len(self.stage_array) + 1))
-        print(self.Zeros_box.currentIndex())
-        print(self.Poles_Box.currentIndex())
-        self.filter_selected.add_stage(self.filter_selected.zero_pairs[self.Zeros_box.currentIndex()], self.filter_selected.pole_pairs[self.Poles_Box.currentIndex()])
+        if self.Zeros_box.currentIndex() == -1:
+            self.filter_selected.add_stage([], self.filter_selected.pole_pairs[self.Poles_Box.currentIndex()])
+        else:
+            self.filter_selected.add_stage(self.filter_selected.zero_pairs[self.Zeros_box.currentIndex()], self.filter_selected.pole_pairs[self.Poles_Box.currentIndex()])
         self.numerador = ""
         self.denominador = ""
-        print(len(self.filter_selected.stages[-1][0]))
 
         if (len(self.filter_selected.stages[-1][0])) == 1:
             self.numerador = str(self.filter_selected.stages[-1][0][0])
@@ -79,8 +79,8 @@ class Stages (QWidget, Ui_Form):
 
         self.aux_stage.label_numerador.setText(self.numerador)
         self.aux_stage.label_denominador.setText(self.denominador)
-        self.aux_stage.label_n.setText("n")
-        self.aux_stage.label_q.setText("q")
+        self.aux_stage.label_n.setText(str(self.filter_selected.get_stage_n(-1)))
+        self.aux_stage.label_q.setText(str(self.filter_selected.get_stage_Q(-1)))
         self.stage_array.append(self.aux_stage)
         self.Stages_Widget_2.layout().addWidget(self.aux_stage)
 
@@ -98,8 +98,14 @@ class Stages (QWidget, Ui_Form):
             j = j + 1
 
     def selected (self):
-        print("selected")
-        self.show_graph()
+        self.selec = []
+        l = 0
+        while l != len(self.stage_array):
+            if self.stage_array[l].radioButton.isChecked() != 0:
+                self.selec.append(l)
+            l = l + 1
+
+        self.filter_selected.plot_selected_stages(self.MplWidget2.canvas.ax, self.selec)
 
     def superposed (self):
         print("superposed")
