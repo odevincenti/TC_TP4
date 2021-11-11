@@ -490,7 +490,9 @@ class Filter:
         n = False
         if self.type == FilterType.BR:
             n = True
-        self.stages = auto_stage(self.pole_pairs, self.zero_pairs, BR=n)
+        pairs = auto_stage(self.pole_pairs, self.zero_pairs, BR=n)
+        for i in range(len(pairs)):
+            self.stages.append(get_stage_tf(pairs[i][0], pairs[i][1], 1))
         names = []
         for i in range(len(self.stages)):
             names.append("Stage " + str(i))
