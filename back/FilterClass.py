@@ -2,7 +2,7 @@ import numpy as np
 import scipy.signal as ss
 import matplotlib.pyplot as plt
 from enum import IntEnum
-from stage_handler import *
+from back.stage_handler import *
 
 # TIPOS DE FILTROS
 class FilterType(IntEnum):
