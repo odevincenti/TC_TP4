@@ -13,13 +13,13 @@ class Stages (QWidget, Ui_Form):
 
         self.filter_selected = filter_chosen
 
+        self.stage_array = []
+
 
         #HIDESSSSS
         self.Q_valor.hide()
         self.fo_valor.hide()
-        self.DR_valor.hide()
         self.label_28.hide()
-        self.label_31.hide()
         self.widget_Stages.hide()
 
         self.MplWidget2.show_toolbar(self.Toolbar2)
@@ -36,7 +36,7 @@ class Stages (QWidget, Ui_Form):
 
         #BUTTONSSS
         self.Create_button.clicked.connect(self.create_stage)
-
+        self.delete_stage_button.clicked.connect(self.delete_stage)
 
 
     def plot_zp(self):
@@ -44,12 +44,8 @@ class Stages (QWidget, Ui_Form):
 
         self.PyZ_Widget.canvas.ax.grid()
         self.PyZ_Widget.canvas.ax.set_title("Poles and Zeros")
-        self.PyZ_Widget.canvas.ax.set_xlabel("Real")
-        self.PyZ_Widget.canvas.ax.set_ylabel("Imaginary")
         self.filter_selected.plot_zp(self.PyZ_Widget.canvas.ax, "red")
-        self.PyZ_Widget.canvas.ax.legend(loc="best")
-
-
+        self.PyZ_Widget.figure.tight_layout()
         self.PyZ_Widget.canvas.draw()
 
     def set_ZP(self):
@@ -60,7 +56,11 @@ class Stages (QWidget, Ui_Form):
     def create_stage (self):
         print("create stage")
         self.aux_stage = StageWidget()
-        #self.Stages_Widget.layout().addWidget(self.aux_curve)
+        self.stage_array.append(self.aux_stage)
+        self.Stages_Widget.layout().addWidget(self.aux_stage)
+
+    def delete_stage(self):
+        print("delete stage")
 
     def selected (self):
         print("selected")
@@ -73,34 +73,6 @@ class Stages (QWidget, Ui_Form):
     def total (self):
         print("total")
         self.show_graph()
-
-    # def add_stage_widget(self):
-    #     numerador = self.numerador_teorico.text()
-    #     denominador = self.denominador_teorico.text()
-    #     num_coef = numerador.split(',')
-    #     den_coef = denominador.split(',')
-    #
-    #     num_len = len(num_coef)
-    #     num_str = ""
-    #     for i in range(0, num_len):
-    #         if (num_len - i) > 2:
-    #             num_str += str(num_coef[i]) + ".s^" + str(num_len - 1 - i) + "+"
-    #         elif (num_len - i) == 2:
-    #             num_str += str(num_coef[i]) + ".s +"
-    #         else:
-    #             num_str += str(num_coef[i])
-    #
-    #     den_len = len(den_coef)
-    #     den_str = ""
-    #     for i in range(0, den_len):
-    #         if (den_len - i) > 2:
-    #             den_str += str(den_coef[i]) + ".s^" + str(den_len - 1 - i) + "+"
-    #         elif (den_len - i) == 2:
-    #             den_str += str(den_coef[i]) + ".s +"
-    #         else:
-    #             den_str += str(den_coef[i])
-    #     self.label_numerador.setText(num_str)
-    #     self.label_denominador.setText(den_str)
 
 
     def show_graph(self):
