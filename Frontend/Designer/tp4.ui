@@ -90,11 +90,6 @@ color:white;</string>
            </item>
            <item>
             <property name="text">
-             <string>Normalized Attenuation</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
              <string>Group Delay</string>
             </property>
            </item>

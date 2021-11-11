@@ -180,12 +180,9 @@ class MainWindowQ (QWidget, Ui_Form):
                 self.fs.plot_mod(self.MplWidget.canvas.ax, A=True)
 
             elif self.type_graph_select.currentIndex() == 3:
-                print("N.Atenuation")
-
-            elif self.type_graph_select.currentIndex() == 4:
                 self.fs.plot_gd(self.MplWidget.canvas.ax)
 
-            elif self.type_graph_select.currentIndex() == 5:
+            elif self.type_graph_select.currentIndex() == 4:
                 self.fs.plot_zp(self.MplWidget.canvas.ax)
         self.MplWidget.canvas.draw()
 
@@ -234,7 +231,7 @@ class MainWindowQ (QWidget, Ui_Form):
                 if self.type_graph_select.currentIndex() == 0:
                     plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
                                   self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=False)
-                elif self.type_graph_select.currentIndex() == 2 or self.type_graph_select.currentIndex() == 3:
+                elif self.type_graph_select.currentIndex() == 2:
                     plot_template(self.MplWidget.canvas.ax, self.fs.filters[self.Curve_List_Select.currentIndex()].type,
                                   self.fs.filters[self.Curve_List_Select.currentIndex()].data, A=True)
                 self.MplWidget.canvas.draw()
