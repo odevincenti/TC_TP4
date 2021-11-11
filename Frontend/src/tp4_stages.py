@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget
 from Frontend.src.ui.tp4_stages import Ui_Form
 from Frontend.src.Stage_Widget import StageWidget
 from copy import copy
+from scipy.signal import tf2zpk
 
 class Stages (QWidget, Ui_Form):
 
@@ -19,8 +20,6 @@ class Stages (QWidget, Ui_Form):
 
         #HIDESSSSS
         self.Q_valor.hide()
-        self.fo_valor.hide()
-        self.label_28.hide()
         self.widget_Stages.hide()
         self.label_29.hide()
         self.label_30.hide()
@@ -109,10 +108,12 @@ class Stages (QWidget, Ui_Form):
                 self.stage_array[i].hide()
                 self.stage_array.pop(i)
                 i = i - 1
+                self.filter_selected.del_stage(i)
             i = i + 1
         while j != len(self.stage_array):
             self.stage_array[j].label_2.setText("Stage " + str(j + 1))
             j = j + 1
+
 
     def selected (self):
         self.selec = []
@@ -125,6 +126,13 @@ class Stages (QWidget, Ui_Form):
         self.MplWidget2.canvas.ax.clear()
         self.filter_selected.plot_combined_stages(self.MplWidget2.canvas.ax, self.selec)
         self.MplWidget2.canvas.draw()
+
+        self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
+        self.label_29.show()
+        self.k_valor.setText(str(self.filter_selected.data.g))
+        self.label_30.show()
+        self.Q_valor.show()
+        self.k_valor.show()
 
 
     def superposed (self):
@@ -139,6 +147,13 @@ class Stages (QWidget, Ui_Form):
         self.filter_selected.plot_selected_stages(self.MplWidget2.canvas.ax, self.selec)
         self.MplWidget2.canvas.draw()
 
+        self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
+        self.label_29.show()
+        self.k_valor.setText(str(self.filter_selected.data.g()))
+        self.label_30.show()
+        self.Q_valor.show()
+        self.k_valor.show()
+
     def total (self):
         self.selec = []
         u = 0
@@ -149,6 +164,13 @@ class Stages (QWidget, Ui_Form):
         self.MplWidget2.canvas.ax.clear()
         self.filter_selected.plot_combined_stages(self.MplWidget2.canvas.ax, self.selec)
         self.MplWidget2.canvas.draw()
+
+        self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
+        self.label_29.show()
+        self.k_valor.setText(str(self.filter_selected.data.g()))
+        self.label_30.show()
+        self.Q_valor.show()
+        self.k_valor.show()
 
     def automatic(self):
         self.filter_selected.get_stages()
@@ -183,3 +205,4 @@ class Stages (QWidget, Ui_Form):
             self.aux_stage.label_q.setText(str(self.filter_selected.get_stage_Q(i)))
             self.stage_array.append(self.aux_stage)
             self.Stages_Widget_2.layout().addWidget(self.aux_stage)
+
