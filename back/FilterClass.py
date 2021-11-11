@@ -542,7 +542,7 @@ class Filter:
             dens.append(self.stages[i][1])
             n = self.stage_names[i]
             c = cycle[i % len(cycle)]
-            plot_stage(ax, nums[ixs], dens[ixs], c, n)
+            plot_stage(ax, nums[i], dens[i], c, n)
         ax.legend(loc="best")
         ax.set_title("Filter Stages")
         ax.set_xlabel("$f$ [Hz]")
