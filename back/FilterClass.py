@@ -470,9 +470,9 @@ class Filter:
         m = self.check_zeropoles(zeros, poles)
         if m != "":
             return m
-        s = get_stage_tf(zeros, poles, gain)
+        num, den = get_stage_tf(zeros, poles, gain)
         n = "Stage " + str(len(self.stages))
-        self.stages.append(s)
+        self.stages.append([num, den])
         self.stage_names.append(n)
         return m
 

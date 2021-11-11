@@ -18,6 +18,7 @@ fil = FS.filters[0]
 
 print(FS.filters[0].get_pole_pairs())
 print(FS.filters[0].get_zero_pairs())
+FS.filters[0].add_stage(FS.filters[0].zeros, FS.filters[0].poles)
 print(FS.filters[0].get_stages())
 
 # BODE

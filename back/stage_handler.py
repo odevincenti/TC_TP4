@@ -10,8 +10,6 @@ def get_stage_pairs(arr):
         solo = True
         for j in range(i + 1, len(p)):
             if abs(p[i].real - p[j].real) < 1E-10 and abs(p[i].imag + p[j].imag) < 1E-10:
-                print(p[i])
-                print(p[j])
                 pairs.append([p[i], p[j]])
                 p = np.delete(p, j)
                 solo = False
