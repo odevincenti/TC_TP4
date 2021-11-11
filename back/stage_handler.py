@@ -83,7 +83,7 @@ def auto_stage(poles, zeross, BR=False):
 def keep_nonegatives(arr):
     p = []
     for a in arr:
-        if a[0].imag >= 0:
+        if a[0].imag >= -1E-10:
             p.append(a[0])
         else:
             p.append(a[1])
