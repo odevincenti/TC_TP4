@@ -18,8 +18,31 @@ fil = FS.filters[0]
 
 print(FS.filters[0].get_pole_pairs())
 print(FS.filters[0].get_zero_pairs())
-FS.filters[0].add_stage(FS.filters[0].zeros, FS.filters[0].poles)
+#FS.filters[0].add_stage(FS.filters[0].zeros, FS.filters[0].poles)
 print(FS.filters[0].get_stages())
+print(FS.filters[0].stages)
+
+for i in range(len(FS.filters[0].stages)):
+    ns = ""
+    num = FS.filters[0].stages[i][0]
+    if len(num) == 3:
+        ns = str(num[0]) + "s^2 + " + str(num[1]) + "s + " + str(num[2])
+    elif len(num) == 2:
+        ns = str(num[0]) + "s + " + str(num[1])
+    elif len(num) == 1:
+        ns = str(num[0])
+    print(" \t \t  " + ns)
+    print(FS.filters[0].stage_names[i] + ": " + "--------------------------------------")
+    ds = ""
+    den = FS.filters[0].stages[i][1]
+    if len(den) == 3:
+        ds = str(den[0]) + "s^2 + " + str(den[1]) + "s + " + str(den[2])
+    elif len(num) == 2:
+        ds = str(den[0]) + "s + " + str(den[1])
+    elif len(num) == 1:
+        ds = str(den[0])
+    print(" \t \t  " + ds)
+    print("\n")
 
 # BODE
 fig, ax = plt.subplots(2, 1)
