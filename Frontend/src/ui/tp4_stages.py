@@ -42,7 +42,7 @@ class Ui_Form(object):
         self.verticalLayout_6.setObjectName("verticalLayout_6")
         self.horizontalLayout_14 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_14.setObjectName("horizontalLayout_14")
-        self.PyZ_Widget = QtWidgets.QWidget(Form)
+        self.PyZ_Widget = MplWidget(Form)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -466,7 +466,7 @@ class Ui_Form(object):
         self.label_6.setText(_translate("Form", "n = "))
         self.label_7.setText(_translate("Form", "Q = "))
         self.delete_stage_button.setText(_translate("Form", "DELETE"))
-from mplwidget import MplWidget
+from Frontend.src.mplwidget import MplWidget
 
 
 if __name__ == "__main__":
