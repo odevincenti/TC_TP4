@@ -513,7 +513,7 @@ class Filter:
         stage = self.stages[ix]
         z, p, k = ss.tf2zpk(stage[0], stage[1])
         if self.get_stage_n(ix) == 1:
-            Q = abs(abs(p) / (2 * p.real))
+            Q = abs(abs(p[0]) / (2 * p[0].real))
         else:
             try:
                 Q = - ((p[0] + p[1]) / (p[0] * p[1])).real
@@ -527,7 +527,7 @@ class Filter:
                 Q = self.get_stage_Q(i)
         return Q
 
-    def get_stages_fo(self):
+    '''def get_stages_fo(self):
         nums = []
         dens = []
         for s in self.stages:
@@ -535,7 +535,15 @@ class Filter:
             dens.append(s[1])
         nums, dens = combine_tf(nums, dens)
         w, mod, ph = ss.bode([nums, dens])
-        return
+        if self.type == FilterType.LP or self.type == FilterType.GD:
+            fo = w[np.argmin(mod[0] - 3 - mod)] / (2 * np.pi)
+        elif self.type == FilterType.HP:
+            fo = w[np.argmin(mod[-1] - 3 - mod)] / (2 * np.pi)
+        elif self.type == FilterType.BP:
+            f1 = 0
+
+
+        return fo'''
 
     def plot_combined_stages(self, ax, ixs):
         nums = []
