@@ -17,14 +17,14 @@ class ChebyII(Filter):
 
     def denormalize(self):
         if self.type == FilterType.LP:
-            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, self.data.wa)
+            z, p, g = ss.lp2lp_zpk(self.zeros, self.poles, self.data.g, self.data.wa / (2 * np.pi))
         elif self.type == FilterType.HP:
-            z, p, g = ss.lp2hp_zpk(self.zeros, self.poles, self.data.g, self.data.wa)
+            z, p, g = ss.lp2hp_zpk(self.zeros, self.poles, self.data.g, self.data.wa / (2 * np.pi))
         elif self.type == FilterType.BP:
-            z, p, g = ss.lp2bp_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wa[0]*self.data.wa[1]), self.data.wa[1] - self.data.wa[0])
+            z, p, g = ss.lp2bp_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wa[0]*self.data.wa[1]) / (2 * np.pi), (self.data.wa[1] - self.data.wa[0]) / (2 * np.pi))
             self.data.n = len(p)
         elif self.type == FilterType.BR:
-            z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]), self.data.wa[1] - self.data.wa[0])
+            z, p, g = ss.lp2bs_zpk(self.zeros, self.poles, self.data.g, np.sqrt(self.data.wp[0] * self.data.wp[1]) / (2 * np.pi), (self.data.wa[1] - self.data.wa[0]) / (2 * np.pi))
             self.data.n = len(p)
         else:
             self.filter_error()

@@ -119,7 +119,7 @@ class Filter:
                 print("No existe aproximación que cumpla con el Q máximo pretendido")
         self.data.n = n
         self.name = ftypes[self.type].capitalize() + " " + atypes[self.approx] + " order " + str(self.data.n)
-        #self.data.g = self.data.g * self.fix_gain(self.get_numden()) * self.data.G
+        self.data.g = self.data.g * self.data.G
         self.num, self.den = self.get_numden()
 
     def add_name_index(self, i):
@@ -172,49 +172,49 @@ class Filter:
 
         return z, p, g
 
-    def fix_gain(self, numden, ftype=None):
-        '''G = 1
-        if self.type == FilterType.LP or self.type == FilterType.BR:
-            w = np.linspace(1E-6, 1E-5, 3)
-        elif self.type == FilterType.HP:
-            w = np.linspace(1E9, 1E10, 3)
-        elif self.type == FilterType.BP:
-            wo = self.data.wp[0] + (self.data.wp[1] - self.data.wp[0])/2
-            w = np.linspace(wo, wo * 1.1, 3)
-        else:
-            self.filter_error()
-            w = [None, None]
-        w, mod, ph = ss.bode([self.zeros, self.poles, self.data.g], w)
-        k = np.power(10, mod[0]/20)
-        return (G/k)#/np.power(10, self.data.Ap/20)'''
-        if ftype is None: ftype = self.type
-        num, den = numden
-        if ftype == FilterType.LP or ftype == FilterType.BR or ftype == FilterType.GD:
-            if num[-1] != 0: k = den[-1] / num[-1]
-            else: k = 1
-        elif ftype == FilterType.HP:
-            k = den[0] / num[0]
-            if self.approx == ApproxType.C: k = k * 10**(-self.data.Ap/20)
-        elif ftype == FilterType.BP:
-            '''wo = self.data.wp[0] + (self.data.wp[1] - self.data.wp[0]) / 2
-            w = np.linspace(wo, wo * 1.1, 3)
-            w, h = ss.freqs_zpk(self.zeros, self.poles, self.data.g, w)
-            habs = abs(h[0])
-            k = 20*np.log10(habs)
-
-            k = -2 * self.data.Q ** 2
-
-            k = 1 / k'''
-
-            z, poles, g = ss.tf2zpk(num, den)
-            alpha = [-2*p.real for p in poles if p.imag > 0]
-            k = np.prod(alpha)/(num[0])#**(1/len(num))# - np.log10(self.data.eps)
-            k = 1
-
-        else:
-            self.filter_error()
-            k = None
-        return k
+    # def fix_gain(self, numden, ftype=None):
+    #     '''G = 1
+    #     if self.type == FilterType.LP or self.type == FilterType.BR:
+    #         w = np.linspace(1E-6, 1E-5, 3)
+    #     elif self.type == FilterType.HP:
+    #         w = np.linspace(1E9, 1E10, 3)
+    #     elif self.type == FilterType.BP:
+    #         wo = self.data.wp[0] + (self.data.wp[1] - self.data.wp[0])/2
+    #         w = np.linspace(wo, wo * 1.1, 3)
+    #     else:
+    #         self.filter_error()
+    #         w = [None, None]
+    #     w, mod, ph = ss.bode([self.zeros, self.poles, self.data.g], w)
+    #     k = np.power(10, mod[0]/20)
+    #     return (G/k)#/np.power(10, self.data.Ap/20)'''
+    #     if ftype is None: ftype = self.type
+    #     num, den = numden
+    #     if ftype == FilterType.LP or ftype == FilterType.BR or ftype == FilterType.GD:
+    #         if num[-1] != 0: k = den[-1] / num[-1]
+    #         else: k = 1
+    #     elif ftype == FilterType.HP:
+    #         k = den[0] / num[0]
+    #         if self.approx == ApproxType.C: k = k * 10**(-self.data.Ap/20)
+    #     elif ftype == FilterType.BP:
+    #         '''wo = self.data.wp[0] + (self.data.wp[1] - self.data.wp[0]) / 2
+    #         w = np.linspace(wo, wo * 1.1, 3)
+    #         w, h = ss.freqs_zpk(self.zeros, self.poles, self.data.g, w)
+    #         habs = abs(h[0])
+    #         k = 20*np.log10(habs)
+    #
+    #         k = -2 * self.data.Q ** 2
+    #
+    #         k = 1 / k'''
+    #
+    #         z, poles, g = ss.tf2zpk(num, den)
+    #         alpha = [-2*p.real for p in poles if p.imag > 0]
+    #         k = np.prod(alpha)/(num[0])#**(1/len(num))# - np.log10(self.data.eps)
+    #         k = 1
+    #
+    #     else:
+    #         self.filter_error()
+    #         k = None
+    #     return k
 
     # get_n: A partir del n óptimo, calcula el orden del filtro tomando en cuenta las restricciones.
     def get_n(self, nmin, nmax):
