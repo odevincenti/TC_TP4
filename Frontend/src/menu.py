@@ -256,13 +256,13 @@ class MainWindowQ (QWidget, Ui_Form):
 
         if self.filter_select.currentIndex() == 0 or self.filter_select.currentIndex() == 1:
             if self.Nmaxmin == 0:
-                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(), (self.fp_valor.value()) * 2 * np.pi, (self.fa_valor.value()) * 2 * np.pi, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, None, None) == ""):
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(), (self.fp_valor.value()) * 2 * np.pi, (self.fa_valor.value()) * 2 * np.pi, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.Gain_valor.value(),self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, None, None) == ""):
                     self.error = 0
                 else:
                     self.error = 1
             elif self.Nmaxmin == 1:
                 if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(),
-                                      (self.fp_valor.value()) * 2 * np.pi, (self.fa_valor.value()) * 2 * np.pi, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor,
+                                      (self.fp_valor.value()) * 2 * np.pi, (self.fa_valor.value()) * 2 * np.pi, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.Gain_valor.value(),
                                       None, None, self.N_min_box_2.value(), self.N_max_box.value(), self.Qmax_valor, None,
                                       None, None) == ""):
                     self.error = 0
@@ -275,13 +275,13 @@ class MainWindowQ (QWidget, Ui_Form):
             self.fa_masmenos = [(self.fa_menos_valor.value()) * 2 * np.pi , (self.fa_mas_valor.value()) * 2 * np.pi]
             self.fp_masmenos = [(self.fp_menos_valor.value()) * 2 * np.pi, (self.fp_mas_valor.value()) * 2 * np.pi]
             if self.Nmaxmin == 0:
-                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(), self.fp_masmenos, self.fa_masmenos, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, None, None) == ""):
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(), self.fp_masmenos, self.fa_masmenos, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.Gain_valor.value(), self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, None, None) == ""):
                     self.error = 0
                 else:
                     self.error = 1
             elif self.Nmaxmin == 1:
                 if (self.fs.addFilter(self.filter_select.currentIndex(), self.aproximation_select.currentIndex(),
-                                      self.fp_masmenos, self.fa_masmenos, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor,
+                                      self.fp_masmenos, self.fa_masmenos, self.Ap_valor.value(), self.Aa_Valor.value(), self.denom_valor, self.Gain_valor.value(),
                                       None, None, self.N_min_box_2.value(), self.N_max_box.value(), self.Qmax_valor, None,
                                       None, None) == ""):
                     self.error = 0
@@ -295,13 +295,13 @@ class MainWindowQ (QWidget, Ui_Form):
             else:
                 self.var = 6
             if self.Nmaxmin == 0:
-                if (self.fs.addFilter(self.filter_select.currentIndex(), self.var, (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor, self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, self.GD_value.value(), self.tolerance_value.value()) == ""):
+                if (self.fs.addFilter(self.filter_select.currentIndex(), self.var, (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor, self.Gain_valor.value(), self.N_min_box_2.value(), None, None, None, self.Qmax_valor, None, self.GD_value.value(), self.tolerance_value.value()) == ""):
                     self.error = 0
                 else:
                     self.error = 1
             elif self.Nmaxmin == 1:
                 if (self.fs.addFilter(self.filter_select.currentIndex(), self.var,
-                                      (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor,
+                                      (self.fp_valor.value()) * 2 * np.pi, None, None, None, self.denom_valor, self.Gain_valor.value(),
                                       None, None, self.N_min_box_2.value(), self.N_max_box.value(), self.Qmax_valor, None,
                                       self.GD_value.value(), self.tolerance_value.value()) == ""):
                     self.error = 0
