@@ -3,7 +3,7 @@ from back.backend import FilterSpace, FilterType, ApproxType, plot_template
 import matplotlib.pyplot as plt
 
 FS = FilterSpace()
-FS.addFilter(FilterType.LP, ApproxType.B, 1000 * (2 * np.pi), 5000 * (2 * np.pi), 0.5, 30, 100, 1, n=9, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
+FS.addFilter(FilterType.LP, ApproxType.G, 1000 * (2 * np.pi), 5000 * (2 * np.pi), 0.5, 30, 100, 1, n=9, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
 #FS.addFilter(FilterType.LP, ApproxType.C, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
 #FS.addFilter(FilterType.LP, ApproxType.CH1, 1000 * (2 * np.pi), 3000 * (2 * np.pi), 3, 30, 0, rp=1, GD=1, nmin=1, nmax=15, Qmax=150)
 #FS.addFilter(FilterType.HP, ApproxType.BW, 4000 * (2 * np.pi), 1000 * (2 * np.pi), 3, 30, 0, 1, rp=1, GD=1, nmin=1, nmax=20, Qmax=150)
@@ -18,7 +18,8 @@ fil = FS.filters[0]
 
 print("Pole pairs: ", FS.filters[0].get_pole_pairs())
 print("Zero pairs: ", FS.filters[0].get_zero_pairs())
-FS.filters[0].add_stage(FS.filters[0].zeros, FS.filters[0].poles)
+#FS.filters[0].add_stage(FS.filters[0].zeros, FS.filters[0].poles)
+FS.filters[0].get_stages()
 
 for i in range(len(FS.filters[0].stages)):
     ns = ""

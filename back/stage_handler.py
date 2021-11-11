@@ -52,11 +52,11 @@ def combine_tf(nums, dens):
         den = np.polymul(den, dens[i])
     return num, den
 
-def plot_stage(ax, tf, c, n, w=None):
+def plot_stage(ax, num, den, c, n, w=None):
     if w is None:
-        w, mod, k = ss.bode(tf)
+        w, mod, k = ss.bode([num, den])
     else:
-        w, mod, k = ss.bode(tf, w)
+        w, mod, k = ss.bode([num, den], w)
     ax.semilogx(w, mod, color=c, label=n)
     return
 
