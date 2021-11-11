@@ -50,27 +50,12 @@ def combine_tf(nums, dens):
         den = np.polymul(den, dens[i])
     return num, den
 
-def plot_stage(ax, tf):
-    wmin, wmax = self.get_wminmax()
-    wmin = wmin / (2 * np.pi)
-    wmax = wmax / (2 * np.pi)
-    w = np.linspace(wmin, wmax, int(100 * wmax / wmin))
-    cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
-    ax.grid()
-    for i in range(len(self.filters)):
-        if self.filters[i].visibility:
-            self.filters[i].plot_mod(ax, cycle[i % len(cycle)], w, A)
-    ax.legend(loc="best")
-    if not A:
-        ax.set_title("Frequency response - Module")
+def plot_stage(ax, tf, c, n, w=None):
+    if w is None:
+        w, mod, k = ss.bode(tf)
     else:
-        ax.set_title("Attenuation")
-    ax.set_xlabel("$f$ [Hz]")
-    if not A:
-        ax.set_ylabel("$|H(s)|$ [dB]")
-    else:
-        ax.set_ylabel("A [dB]")
-    ax.set_xlim([wmin, wmax])
+        w, mod, k = ss.bode(tf, w)
+    ax.semilogx(w, mod, color="blue", label=n)
     return
 
 # format_unit: Obtiene la unidad correcta y escala el número para que sea más fácil de leer

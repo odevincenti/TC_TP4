@@ -18,10 +18,9 @@ class Legendre(Filter):
                 break
             '''
             z, p, k = self.get_fun(n)
-            k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
             wap = np.linspace(min(1, self.get_wan()), max(1, self.get_wan()), 2)
             wap, mod, ph = ss.bode([z, p, k], w=wap)
-            if mod[0] >= -self.data.Ap * 1.001 and mod[1] <= -self.data.Aa * 0.999:
+            if mod[0] >= -self.data.Ap * 1.0001 and mod[1] <= -self.data.Aa * 0.9999:
                 break
             n = n + 1
         return n

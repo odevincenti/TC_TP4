@@ -13,12 +13,17 @@ class Bessel(Filter):
             if self.data.tol is None: self.data.tol = 0.1
             n = nmin
             for i in range(nmax - nmin):
-                [z, p, k] = ss.bessel(n, 1, analog=True, output="zpk", norm='delay')
-                k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
+                [z, p, g] = ss.bessel(n, 1, analog=True, output="zpk", norm='delay')
+                # num, den = ss.zpk2tf(z, p, g)
+                # if num[-1] != 0:
+                #     k = den[-1] / num[-1]
+                # else:
+                #     k = 1
+                # g = k * g
                 '''w, mod, ph = ss.bode([b, a])
                 group_delay = np.divide(-np.diff(ph), np.diff(w))  # d(ph)/d(w)'''
                 w = np.linspace(wpn/10, wpn*10, num=1000)
-                w, gd = self.get_GD(w, z=z, p=p, k=k)
+                w, gd = self.get_GD(w, z=z, p=p, k=g)
                 closest = (np.abs(w - wpn)).argmin()
                 if gd[closest] >= (1 - self.data.tol)*self.data.GD:
                     break
@@ -27,7 +32,7 @@ class Bessel(Filter):
             n = nmin
             for i in range(nmax - nmin):
                 z, p, k = self.get_fun(n)
-                k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
+                #k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
                 wap = np.linspace(min(1, self.get_wan()), max(1, self.get_wan()), 2)
                 wap, mod, ph = ss.bode([z, p, k], w=wap)
                 if np.around(mod[0]) >= -self.data.Ap and np.around(mod[1]) <= -self.data.Aa:

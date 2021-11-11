@@ -27,7 +27,7 @@ class Gauss(Filter):
             n = nmin
             for i in range(nmax - nmin):
                 z, p, k = self.get_fun(n)
-                k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
+                #k = k * self.fix_gain(ss.zpk2tf(z, p, k), FilterType.LP)
                 wap = np.linspace(min(1, self.get_wan()), max(1, self.get_wan()), 2)
                 wap, mod, ph = ss.bode([z, p, k], w=wap)
                 if np.around(mod[0]) >= -self.data.Ap and np.around(mod[1]) <= -self.data.Aa:

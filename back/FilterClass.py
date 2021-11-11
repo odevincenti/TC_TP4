@@ -105,6 +105,7 @@ class Filter:
         self.pole_pair_names = None
         self.zero_pairs = None
         self.zero_pair_names = None
+        self.stage_names = None
         self.stages = []
         if n is not None: self.data.n = n
         else: n = self.get_n(nmin, nmax)
@@ -465,8 +466,24 @@ class Filter:
         return self.zero_pair_names
 
     def add_stage(self, zeros, poles, gain=1):
+        m = self.check_zeropoles(zeros, poles)
+        if m != "":
+            return m
         s = get_stage_tf(zeros, poles, gain)
+        n = "Stage " + str(len(self.stages))
         self.stages.append(s)
+        self.stage_names.append(n)
+        return m
+
+    def check_zeropoles(self, zeros, poles):
+        m = ""
+        for pole in poles:
+            if pole not in self.poles:
+                m = "El polo ingresado no forma parte del filtro"
+        for zero in zeros:
+            if zero not in self.zeros:
+                m = "El cero ingresado no forma parte del filtro"
+        return m
 
     def plot_combined_stages(self, ax, ixs):
         nums = []
@@ -476,13 +493,29 @@ class Filter:
             dens.append(self.stages[i].den)
         combined_tf = combine_tf(nums, dens)
 
-        ax.grid()
         w, mod, k = ss.bode(combined_tf)
         ax.semilogx(w, mod, color="blue")
 
-        ax.set_title("Combined stages")
+        ax.set_title("Combined Stages")
         ax.set_xlabel("$f$ [Hz]")
         ax.set_ylabel("$|H(s)|$ [dB]")
 
         return
 
+    def plot_selected_stages(self, ax, ixs):
+        nums = []
+        dens = []
+        ax.grid()
+        cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        for i in ixs:
+            nums.append(self.stages[i].num)
+            dens.append(self.stages[i].den)
+            n = self.stage_names[i]
+            c = cycle[i % len(cycle)]
+            plot_stage(ax, [nums[ixs], dens[ixs]], c, n)
+        ax.legend(loc="best")
+        ax.set_title("Filter Stages")
+        ax.set_xlabel("$f$ [Hz]")
+        ax.set_ylabel("$|H(s)|$ [dB]")
+
+        return
