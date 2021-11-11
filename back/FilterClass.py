@@ -476,6 +476,10 @@ class Filter:
         self.stage_names.append(n)
         return m
 
+    def del_stage(self, ix):
+        self.stages.pop(ix)
+        return
+
     def check_zeropoles(self, zeros, poles):
         m = ""
         for pole in poles:
@@ -488,6 +492,7 @@ class Filter:
 
     def get_stages(self):
         n = False
+        self.stages = []
         if self.type == FilterType.BR:
             n = True
         pairs = auto_stage(self.pole_pairs, self.zero_pairs, BR=n)
@@ -521,6 +526,16 @@ class Filter:
             if self.get_stage_Q(i) > Q:
                 Q = self.get_stage_Q(i)
         return Q
+
+    def get_stages_fo(self):
+        nums = []
+        dens = []
+        for s in self.stages:
+            nums.append(s[0])
+            dens.append(s[1])
+        nums, dens = combine_tf(nums, dens)
+        w, mod, ph = ss.bode([nums, dens])
+        return
 
     def plot_combined_stages(self, ax, ixs):
         nums = []
