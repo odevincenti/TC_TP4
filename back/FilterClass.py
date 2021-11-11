@@ -515,6 +515,13 @@ class Filter:
             except RuntimeWarning: pass
         return Q
 
+    def get_stages_Qmax(self):
+        Q = 0
+        for i in range(len(self.stages)):
+            if self.get_stage_Q(i) > Q:
+                Q = self.get_stage_Q(i)
+        return Q
+
     def plot_combined_stages(self, ax, ixs):
         nums = []
         dens = []
