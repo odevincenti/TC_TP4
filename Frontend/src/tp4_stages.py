@@ -127,12 +127,12 @@ class Stages (QWidget, Ui_Form):
         self.filter_selected.plot_combined_stages(self.MplWidget2.canvas.ax, self.selec)
         self.MplWidget2.canvas.draw()
 
-        self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
-        self.label_29.show()
-        self.k_valor.setText(str(self.filter_selected.data.g))
-        self.label_30.show()
-        self.Q_valor.show()
-        self.k_valor.show()
+        # self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
+        # self.label_29.show()
+        # self.k_valor.setText(str(self.filter_selected.data.g))
+        # self.label_30.show()
+        # self.Q_valor.show()
+        # self.k_valor.show()
 
 
     def superposed (self):
@@ -147,12 +147,12 @@ class Stages (QWidget, Ui_Form):
         self.filter_selected.plot_selected_stages(self.MplWidget2.canvas.ax, self.selec)
         self.MplWidget2.canvas.draw()
 
-        self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
-        self.label_29.show()
-        self.k_valor.setText(str(self.filter_selected.data.g()))
-        self.label_30.show()
-        self.Q_valor.show()
-        self.k_valor.show()
+        # self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
+        # self.label_29.show()
+        # self.k_valor.setText(str(self.filter_selected.data.g()))
+        # self.label_30.show()
+        # self.Q_valor.show()
+        # self.k_valor.show()
 
     def total (self):
         self.selec = []
@@ -165,12 +165,12 @@ class Stages (QWidget, Ui_Form):
         self.filter_selected.plot_combined_stages(self.MplWidget2.canvas.ax, self.selec)
         self.MplWidget2.canvas.draw()
 
-        self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
-        self.label_29.show()
-        self.k_valor.setText(str(self.filter_selected.data.g()))
-        self.label_30.show()
-        self.Q_valor.show()
-        self.k_valor.show()
+        # self.Q_valor.setText(str(self.filter_selected.get_stages_Qmax()))
+        # self.label_29.show()
+        # self.k_valor.setText(str(self.filter_selected.data.g()))
+        # self.label_30.show()
+        # self.Q_valor.show()
+        # self.k_valor.show()
 
     def automatic(self):
         self.filter_selected.get_stages()
