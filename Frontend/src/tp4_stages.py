@@ -105,11 +105,22 @@ class Stages (QWidget, Ui_Form):
                 self.selec.append(l)
             l = l + 1
 
-        self.filter_selected.plot_selected_stages(self.MplWidget2.canvas.ax, self.selec)
+        self.MplWidget2.canvas.ax.clear()
+        self.filter_selected.plot_combined_stages(self.MplWidget2.canvas.ax, self.selec)
+        self.MplWidget2.canvas.draw()
+
 
     def superposed (self):
-        print("superposed")
-        self.show_graph()
+        self.selec = []
+        l = 0
+        while l != len(self.stage_array):
+            if self.stage_array[l].radioButton.isChecked() != 0:
+                self.selec.append(l)
+            l = l + 1
+
+        self.MplWidget2.canvas.ax.clear()
+        self.filter_selected.plot_selected_stages(self.MplWidget2.canvas.ax, self.selec)
+        self.MplWidget2.canvas.draw()
 
     def total (self):
         print("total")
