@@ -279,7 +279,7 @@ color:white;</string>
                 <string notr="true">color:white;</string>
                </property>
                <property name="text">
-                <string>Selected</string>
+                <string>Combined</string>
                </property>
               </widget>
              </item>
@@ -519,6 +519,19 @@ color:white;</string>
         </layout>
        </item>
        <item>
+        <spacer name="verticalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -538,108 +551,264 @@ color:white;</string>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_16">
              <item>
-              <widget class="QWidget" name="Stages_Widget" native="true">
-               <property name="styleSheet">
-                <string notr="true">background:rgb(30,30,30);</string>
+              <widget class="QScrollArea" name="scrollArea">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_29">
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_17">
-                  <item>
-                   <layout class="QVBoxLayout" name="verticalLayout_12">
+               <property name="maximumSize">
+                <size>
+                 <width>1000</width>
+                 <height>350</height>
+                </size>
+               </property>
+               <property name="widgetResizable">
+                <bool>true</bool>
+               </property>
+               <widget class="QWidget" name="scrollAreaWidgetContents_2">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>498</width>
+                  <height>342</height>
+                 </rect>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <item>
+                  <widget class="QWidget" name="Stages_Widget_2" native="true">
+                   <property name="styleSheet">
+                    <string notr="true">background:rgb(30,30,30);</string>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_30">
                     <item>
-                     <widget class="QWidget" name="widget_Stages" native="true">
-                      <property name="styleSheet">
-                       <string notr="true">background:rgb(30,30,30);</string>
-                      </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_27">
-                       <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_16">
-                         <item>
-                          <widget class="QLabel" name="label_32">
-                           <property name="font">
-                            <font>
-                             <pointsize>12</pointsize>
-                            </font>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true">color:white;</string>
-                           </property>
-                           <property name="text">
-                            <string>Stage 1</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QRadioButton" name="radioButton">
-                           <property name="text">
-                            <string/>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_28">
+                     <layout class="QHBoxLayout" name="horizontalLayout_8">
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_4">
+                        <item>
+                         <widget class="QWidget" name="widget_Stages" native="true">
+                          <property name="styleSheet">
+                           <string notr="true"/>
+                          </property>
+                          <layout class="QHBoxLayout" name="horizontalLayout_11">
                            <item>
-                            <widget class="QWidget" name="widget_4" native="true">
-                             <property name="styleSheet">
-                              <string notr="true">background:orange;</string>
-                             </property>
-                            </widget>
+                            <layout class="QVBoxLayout" name="verticalLayout_5">
+                             <item>
+                              <widget class="QLabel" name="label_2">
+                               <property name="font">
+                                <font>
+                                 <pointsize>12</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">color:white;</string>
+                               </property>
+                               <property name="text">
+                                <string>Stage 1</string>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QRadioButton" name="radioButton">
+                               <property name="text">
+                                <string/>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <layout class="QVBoxLayout" name="verticalLayout_7">
+                               <item>
+                                <layout class="QHBoxLayout" name="horizontalLayout_12">
+                                 <item>
+                                  <widget class="QLabel" name="label_3">
+                                   <property name="styleSheet">
+                                    <string notr="true">color:white
+</string>
+                                   </property>
+                                   <property name="text">
+                                    <string>H(s) = </string>
+                                   </property>
+                                   <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <layout class="QVBoxLayout" name="verticalLayout_12">
+                                   <item>
+                                    <widget class="QLabel" name="label_numerador">
+                                     <property name="font">
+                                      <font>
+                                       <pointsize>12</pointsize>
+                                      </font>
+                                     </property>
+                                     <property name="styleSheet">
+                                      <string notr="true">color:white</string>
+                                     </property>
+                                     <property name="text">
+                                      <string/>
+                                     </property>
+                                     <property name="alignment">
+                                      <set>Qt::AlignCenter</set>
+                                     </property>
+                                    </widget>
+                                   </item>
+                                   <item>
+                                    <widget class="Line" name="line_ecuacion">
+                                     <property name="orientation">
+                                      <enum>Qt::Horizontal</enum>
+                                     </property>
+                                    </widget>
+                                   </item>
+                                   <item>
+                                    <widget class="QLabel" name="label_denominador">
+                                     <property name="font">
+                                      <font>
+                                       <pointsize>12</pointsize>
+                                      </font>
+                                     </property>
+                                     <property name="styleSheet">
+                                      <string notr="true">color:white</string>
+                                     </property>
+                                     <property name="text">
+                                      <string/>
+                                     </property>
+                                     <property name="alignment">
+                                      <set>Qt::AlignCenter</set>
+                                     </property>
+                                    </widget>
+                                   </item>
+                                  </layout>
+                                 </item>
+                                </layout>
+                               </item>
+                               <item>
+                                <widget class="Line" name="line_ecuacion_2">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="Line" name="line_ecuacion_3">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <layout class="QGridLayout" name="gridLayout">
+                                 <item row="1" column="0">
+                                  <widget class="QLabel" name="label_6">
+                                   <property name="styleSheet">
+                                    <string notr="true">color:white</string>
+                                   </property>
+                                   <property name="text">
+                                    <string>n = </string>
+                                   </property>
+                                   <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item row="0" column="1">
+                                  <widget class="QLabel" name="label_q">
+                                   <property name="font">
+                                    <font>
+                                     <pointsize>12</pointsize>
+                                    </font>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">color:white</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item row="0" column="0">
+                                  <widget class="QLabel" name="label_7">
+                                   <property name="styleSheet">
+                                    <string notr="true">color:white</string>
+                                   </property>
+                                   <property name="text">
+                                    <string>Q = </string>
+                                   </property>
+                                   <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item row="1" column="1">
+                                  <widget class="QLabel" name="label_n">
+                                   <property name="font">
+                                    <font>
+                                     <pointsize>12</pointsize>
+                                    </font>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">color:white</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                </layout>
+                               </item>
+                               <item>
+                                <spacer name="verticalSpacer_4">
+                                 <property name="orientation">
+                                  <enum>Qt::Vertical</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>20</width>
+                                   <height>40</height>
+                                  </size>
+                                 </property>
+                                </spacer>
+                               </item>
+                              </layout>
+                             </item>
+                            </layout>
                            </item>
                           </layout>
-                         </item>
-                        </layout>
-                       </item>
-                       <item>
-                        <spacer name="verticalSpacer_4">
-                         <property name="orientation">
-                          <enum>Qt::Vertical</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>20</width>
-                           <height>40</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                      </layout>
-                     </widget>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item>
+                       <spacer name="verticalSpacer_5">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
                     </item>
                    </layout>
-                  </item>
-                  <item>
-                   <spacer name="verticalSpacer_5">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
               </widget>
              </item>
             </layout>

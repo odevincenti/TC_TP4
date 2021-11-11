@@ -20,7 +20,7 @@ class Stages (QWidget, Ui_Form):
         self.Q_valor.hide()
         self.fo_valor.hide()
         self.label_28.hide()
-        self.widget_Stages.hide()
+        self.widget_Stages_2.hide()
 
         self.MplWidget2.show_toolbar(self.Toolbar2)
         self.plot_zp()
@@ -54,13 +54,23 @@ class Stages (QWidget, Ui_Form):
 
 
     def create_stage (self):
-        print("create stage")
         self.aux_stage = StageWidget()
+        self.aux_stage.label.setText("Stage " + str(len(self.stage_array) + 1))
         self.stage_array.append(self.aux_stage)
-        self.Stages_Widget.layout().addWidget(self.aux_stage)
+        self.Stages_Widget_2.layout().addWidget(self.aux_stage)
 
     def delete_stage(self):
-        print("delete stage")
+        i = 0
+        j = 0
+        while i < len(self.stage_array):
+            if self.stage_array[i].radioButton.isChecked() != 0:
+                self.stage_array[i].hide()
+                self.stage_array.pop(i)
+                i = i - 1
+            i = i + 1
+        while j != len(self.stage_array):
+            self.stage_array[j].label.setText("Stage " + str(j + 1))
+            j = j + 1
 
     def selected (self):
         print("selected")
@@ -72,6 +82,7 @@ class Stages (QWidget, Ui_Form):
 
     def total (self):
         print("total")
+
         self.show_graph()
 
 
