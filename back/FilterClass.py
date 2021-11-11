@@ -523,6 +523,7 @@ class Filter:
             dens.append(self.stages[i][1])
         combined_tf = combine_tf(nums, dens)
 
+        ax.grid()
         w, mod, k = ss.bode(combined_tf)
         ax.semilogx(w, mod, color="blue")
 
