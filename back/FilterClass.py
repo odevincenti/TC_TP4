@@ -519,8 +519,8 @@ class Filter:
         nums = []
         dens = []
         for i in ixs:
-            nums.append(self.stages[i].num)
-            dens.append(self.stages[i].den)
+            nums.append(self.stages[i][0])
+            dens.append(self.stages[i][1])
         combined_tf = combine_tf(nums, dens)
 
         w, mod, k = ss.bode(combined_tf)
@@ -538,8 +538,8 @@ class Filter:
         ax.grid()
         cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
         for i in ixs:
-            nums.append(self.stages[i].num)
-            dens.append(self.stages[i].den)
+            nums.append(self.stages[i][0])
+            dens.append(self.stages[i][1])
             n = self.stage_names[i]
             c = cycle[i % len(cycle)]
             plot_stage(ax, [nums[ixs], dens[ixs]], c, n)
