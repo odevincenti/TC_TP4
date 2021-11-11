@@ -533,16 +533,12 @@ class Filter:
         return
 
     def plot_selected_stages(self, ax, ixs):
-        nums = []
-        dens = []
         ax.grid()
         cycle = plt.rcParams['axes.prop_cycle'].by_key()['color']
         for i in ixs:
-            nums.append(self.stages[i][0])
-            dens.append(self.stages[i][1])
             n = self.stage_names[i]
             c = cycle[i % len(cycle)]
-            plot_stage(ax, nums[i], dens[i], c, n)
+            plot_stage(ax, self.stages[i][0], self.stages[i][1], c, n)
         ax.legend(loc="best")
         ax.set_title("Filter Stages")
         ax.set_xlabel("$f$ [Hz]")
