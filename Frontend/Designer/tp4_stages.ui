@@ -572,8 +572,8 @@ color:white;</string>
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>485</width>
-                  <height>330</height>
+                  <width>498</width>
+                  <height>342</height>
                  </rect>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -584,19 +584,19 @@ color:white;</string>
                    </property>
                    <layout class="QHBoxLayout" name="horizontalLayout_30">
                     <item>
-                     <layout class="QHBoxLayout" name="horizontalLayout_18">
+                     <layout class="QHBoxLayout" name="horizontalLayout_8">
                       <item>
-                       <layout class="QVBoxLayout" name="verticalLayout_13">
+                       <layout class="QVBoxLayout" name="verticalLayout_4">
                         <item>
-                         <widget class="QWidget" name="widget_Stages_2" native="true">
+                         <widget class="QWidget" name="widget_Stages" native="true">
                           <property name="styleSheet">
-                           <string notr="true">background:rgb(30,30,30);</string>
+                           <string notr="true"/>
                           </property>
-                          <layout class="QHBoxLayout" name="horizontalLayout_31">
+                          <layout class="QHBoxLayout" name="horizontalLayout_11">
                            <item>
-                            <layout class="QVBoxLayout" name="verticalLayout_17">
+                            <layout class="QVBoxLayout" name="verticalLayout_5">
                              <item>
-                              <widget class="QLabel" name="label_33">
+                              <widget class="QLabel" name="label_2">
                                <property name="font">
                                 <font>
                                  <pointsize>12</pointsize>
@@ -614,37 +614,123 @@ color:white;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QRadioButton" name="radioButton_2">
+                              <widget class="QRadioButton" name="radioButton">
                                <property name="text">
                                 <string/>
                                </property>
                               </widget>
                              </item>
                              <item>
-                              <layout class="QHBoxLayout" name="horizontalLayout_32">
+                              <layout class="QVBoxLayout" name="verticalLayout_7">
                                <item>
-                                <widget class="QWidget" name="widget_5" native="true">
+                                <widget class="QLabel" name="label_numerador">
+                                 <property name="font">
+                                  <font>
+                                   <pointsize>12</pointsize>
+                                  </font>
+                                 </property>
                                  <property name="styleSheet">
-                                  <string notr="true">background:orange;</string>
+                                  <string notr="true">color:white</string>
+                                 </property>
+                                 <property name="text">
+                                  <string/>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
                                  </property>
                                 </widget>
+                               </item>
+                               <item>
+                                <widget class="Line" name="line_ecuacion">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="label_denominador">
+                                 <property name="font">
+                                  <font>
+                                   <pointsize>12</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="styleSheet">
+                                  <string notr="true">color:white</string>
+                                 </property>
+                                 <property name="text">
+                                  <string/>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="Line" name="line_ecuacion_2">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="Line" name="line_ecuacion_3">
+                                 <property name="orientation">
+                                  <enum>Qt::Horizontal</enum>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="label_n">
+                                 <property name="font">
+                                  <font>
+                                   <pointsize>12</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="styleSheet">
+                                  <string notr="true">color:white</string>
+                                 </property>
+                                 <property name="text">
+                                  <string/>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <widget class="QLabel" name="label_q">
+                                 <property name="font">
+                                  <font>
+                                   <pointsize>12</pointsize>
+                                  </font>
+                                 </property>
+                                 <property name="styleSheet">
+                                  <string notr="true">color:white</string>
+                                 </property>
+                                 <property name="text">
+                                  <string/>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item>
+                                <spacer name="verticalSpacer_4">
+                                 <property name="orientation">
+                                  <enum>Qt::Vertical</enum>
+                                 </property>
+                                 <property name="sizeHint" stdset="0">
+                                  <size>
+                                   <width>20</width>
+                                   <height>40</height>
+                                  </size>
+                                 </property>
+                                </spacer>
                                </item>
                               </layout>
                              </item>
                             </layout>
-                           </item>
-                           <item>
-                            <spacer name="verticalSpacer_6">
-                             <property name="orientation">
-                              <enum>Qt::Vertical</enum>
-                             </property>
-                             <property name="sizeHint" stdset="0">
-                              <size>
-                               <width>20</width>
-                               <height>40</height>
-                              </size>
-                             </property>
-                            </spacer>
                            </item>
                           </layout>
                          </widget>
@@ -652,7 +738,7 @@ color:white;</string>
                        </layout>
                       </item>
                       <item>
-                       <spacer name="verticalSpacer_7">
+                       <spacer name="verticalSpacer_5">
                         <property name="orientation">
                          <enum>Qt::Vertical</enum>
                         </property>
@@ -660,19 +746,6 @@ color:white;</string>
                          <size>
                           <width>20</width>
                           <height>40</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item>
-                       <spacer name="horizontalSpacer_6">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
                          </size>
                         </property>
                        </spacer>
